@@ -28,6 +28,9 @@ Simply visit the hub and select a training module. Each tool includes:
 
 Have ideas for new training scenarios or improvements? We welcome contributions from all team members. Reach out to discuss how you can help expand our training capabilities.
 
+## 📬 Contact
+
+For questions, feedback, or access requests, contact the Mission Success Manager.
 
 ---
 

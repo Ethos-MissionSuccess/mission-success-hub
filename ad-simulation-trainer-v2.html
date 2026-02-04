@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Active Directory Simulation - CANES User Account Creation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #e0e0e0;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            color: #00aaff;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .simulation-container {
+            background: #0f0f1a;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(0, 150, 255, 0.1);
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        /* Windows Title Bar */
+        .window-titlebar {
+            background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+            padding: 6px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .window-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-size: 0.85rem;
+        }
+
+        .window-icon {
+            width: 16px;
+            height: 16px;
+            background: #ffd700;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 2px;
+        }
+
+        .window-btn {
+            width: 28px;
+            height: 20px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .window-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .window-btn.close:hover {
+            background: #e81123;
+        }
+
+        /* Menu Bar */
+        .menu-bar {
+            background: #f0f0f0;
+            padding: 2px 5px;
+            display: flex;
+            gap: 15px;
+            font-size: 0.8rem;
+            color: #333;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .menu-item {
+            padding: 3px 8px;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            background: #e0e0e0;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            background: #f5f5f5;
+            padding: 5px 10px;
+            display: flex;
+            gap: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .toolbar-btn {
+            width: 24px;
+            height: 24px;
+            background: transparent;
+            border: 1px solid transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .toolbar-btn:hover {
+            background: #e0e0e0;
+            border-color: #ccc;
+        }
+
+        .toolbar-separator {
+            width: 1px;
+            background: #ccc;
+            margin: 0 5px;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            display: flex;
+            background: #fff;
+            min-height: 450px;
+        }
+
+        /* Tree View (Left Panel) */
+        .tree-panel {
+            width: 300px;
+            background: #fff;
+            border-right: 1px solid #ddd;
+            overflow: auto;
+            font-size: 0.8rem;
+            color: #333;
+        }
+
+        .tree-item {
+            display: flex;
+            align-items: center;
+            padding: 3px 5px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .tree-item:hover {
+            background: #e8f4fc;
+        }
+
+        .tree-item.selected {
+            background: #cce8ff;
+        }
+
+        .tree-item.hotspot {
+            position: relative;
+        }
+
+        .tree-item.hotspot.active::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border: 2px solid #ff6600;
+            border-radius: 3px;
+            animation: pulse 1.5s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .tree-expand {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #666;
+        }
+
+        .tree-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .tree-icon.folder { color: #f0c000; }
+        .tree-icon.ou { color: #d4a017; }
+        .tree-icon.domain { color: #2563eb; }
+        .tree-icon.users { color: #0078d4; }
+
+        .tree-children {
+            margin-left: 20px;
+            display: none;
+        }
+
+        .tree-children.expanded {
+            display: block;
+        }
+
+        /* Right Panel - Content Area */
+        .content-panel {
+            flex: 1;
+            background: #fff;
+            padding: 10px;
+            overflow: auto;
+        }
+
+        .content-header {
+            font-size: 0.75rem;
+            color: #666;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+        }
+
+        .user-list {
+            font-size: 0.8rem;
+            color: #333;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 4px 8px;
+            gap: 10px;
+        }
+
+        .user-item:hover {
+            background: #f0f0f0;
+        }
+
+        .user-icon {
+            font-size: 14px;
+        }
+
+        /* Context Menu */
+        .context-menu {
+            position: absolute;
+            background: #f8f8f8;
+            border: 1px solid #ccc;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.2);
+            font-size: 0.8rem;
+            color: #333;
+            min-width: 180px;
+            display: none;
+            z-index: 100;
+        }
+
+        .context-menu.visible {
+            display: block;
+        }
+
+        .context-item {
+            padding: 6px 25px 6px 30px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .context-item:hover {
+            background: #0078d4;
+            color: white;
+        }
+
+        .context-item.disabled {
+            color: #999;
+            cursor: default;
+        }
+
+        .context-item.disabled:hover {
+            background: transparent;
+            color: #999;
+        }
+
+        .context-item.has-submenu::after {
+            content: '▶';
+            position: absolute;
+            right: 10px;
+            font-size: 8px;
+        }
+
+        .context-separator {
+            height: 1px;
+            background: #ddd;
+            margin: 4px 0;
+        }
+
+        .context-item.hotspot.active {
+            background: #fff3e0;
+            outline: 2px solid #ff6600;
+        }
+
+        /* Submenu */
+        .submenu {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background: #f8f8f8;
+            border: 1px solid #ccc;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.2);
+            min-width: 150px;
+            display: none;
+        }
+
+        .context-item:hover .submenu {
+            display: block;
+        }
+
+        /* Dialog Boxes */
+        .dialog-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+
+        .dialog-overlay.visible {
+            display: flex;
+        }
+
+        .dialog {
+            background: #f0f0f0;
+            border-radius: 4px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            min-width: 450px;
+            max-width: 500px;
+        }
+
+        .dialog-titlebar {
+            background: #fff;
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dialog-title {
+            font-size: 0.9rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dialog-title-icon {
+            font-size: 20px;
+        }
+
+        .dialog-close {
+            background: transparent;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: #666;
+            padding: 0 5px;
+        }
+
+        .dialog-close:hover {
+            color: #e81123;
+        }
+
+        .dialog-body {
+            padding: 20px;
+            color: #333;
+            font-size: 0.85rem;
+        }
+
+        .form-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .form-label {
+            width: 120px;
+            text-align: right;
+            padding-right: 10px;
+        }
+
+        .form-input {
+            flex: 1;
+            padding: 5px 8px;
+            border: 1px solid #ccc;
+            font-size: 0.85rem;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #0078d4;
+        }
+
+        .form-input.hotspot.active {
+            outline: 2px solid #ff6600;
+            animation: pulse 1.5s infinite;
+        }
+
+        .dialog-footer {
+            padding: 15px 20px;
+            background: #f0f0f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .dialog-btn {
+            padding: 6px 20px;
+            border: 1px solid #ccc;
+            background: #e0e0e0;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .dialog-btn:hover {
+            background: #d0d0d0;
+        }
+
+        .dialog-btn.primary {
+            background: #0078d4;
+            border-color: #0078d4;
+            color: white;
+        }
+
+        .dialog-btn.primary:hover {
+            background: #006abc;
+        }
+
+        .dialog-btn.hotspot.active {
+            outline: 2px solid #ff6600;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Group Selection List */
+        .group-list {
+            border: 1px solid #ccc;
+            background: #fff;
+            height: 150px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        .group-item {
+            padding: 5px 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .group-item:hover {
+            background: #e8f4fc;
+        }
+
+        .group-item.selected {
+            background: #cce8ff;
+        }
+
+        .group-item.hotspot.active {
+            outline: 2px solid #ff6600;
+            animation: pulse 1.5s infinite;
+        }
+
+        .selected-groups {
+            border: 1px solid #ccc;
+            background: #fff;
+            min-height: 60px;
+            padding: 5px;
+            margin-top: 10px;
+        }
+
+        .selected-group-tag {
+            display: inline-block;
+            background: #e0e0e0;
+            padding: 3px 8px;
+            margin: 2px;
+            border-radius: 3px;
+            font-size: 0.75rem;
+        }
+
+        /* Instruction Panel */
+        .instruction-panel {
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f2744 100%);
+            padding: 15px 20px;
+            border-top: 3px solid #00aaff;
+        }
+
+        .instruction-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .step-indicator {
+            background: #00aaff;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .mode-toggle {
+            display: flex;
+            gap: 10px;
+        }
+
+        .mode-btn {
+            padding: 5px 15px;
+            border: 1px solid #00aaff;
+            background: transparent;
+            color: #00aaff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .mode-btn.active {
+            background: #00aaff;
+            color: #fff;
+        }
+
+        .mode-btn:hover {
+            background: rgba(0, 170, 255, 0.2);
+        }
+
+        .instruction-text {
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .instruction-text .highlight {
+            color: #ffd700;
+            font-weight: 600;
+        }
+
+        .feedback {
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .feedback.visible {
+            display: block;
+        }
+
+        .feedback.error {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid #dc3545;
+            color: #ff6b6b;
+        }
+
+        .feedback.success {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid #28a745;
+            color: #5fd068;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .control-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .control-btn.reset {
+            background: #6c757d;
+            color: #fff;
+        }
+
+        .control-btn.reset:hover {
+            background: #5a6268;
+        }
+
+        .control-btn.hint {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .control-btn.hint:hover {
+            background: #e0a800;
+        }
+
+        /* Completion Screen */
+        .completion-screen {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 300;
+        }
+
+        .completion-screen.visible {
+            display: flex;
+        }
+
+        .completion-content {
+            text-align: center;
+            color: #fff;
+        }
+
+        .completion-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .completion-title {
+            font-size: 2rem;
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+
+        .completion-subtitle {
+            font-size: 1.1rem;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .completion-btn {
+            padding: 12px 30px;
+            background: #00aaff;
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .completion-btn:hover {
+            background: #0088cc;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>🖥️ Active Directory Simulation Trainer</h1>
+        <p>CANES Environment - User Account Creation</p>
+    </div>
+
+    <div class="simulation-container">
+        <!-- Windows Title Bar -->
+        <div class="window-titlebar">
+            <div class="window-title">
+                <div class="window-icon">👥</div>
+                <span>Active Directory Users and Computers</span>
+            </div>
+            <div class="window-controls">
+                <button class="window-btn">─</button>
+                <button class="window-btn">☐</button>
+                <button class="window-btn close">✕</button>
+            </div>
+        </div>
+
+        <!-- Menu Bar -->
+        <div class="menu-bar">
+            <div class="menu-item">File</div>
+            <div class="menu-item">Action</div>
+            <div class="menu-item">View</div>
+            <div class="menu-item">Help</div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <button class="toolbar-btn">⬅️</button>
+            <button class="toolbar-btn">➡️</button>
+            <button class="toolbar-btn">⬆️</button>
+            <div class="toolbar-separator"></div>
+            <button class="toolbar-btn">🔍</button>
+            <button class="toolbar-btn">📋</button>
+            <div class="toolbar-separator"></div>
+            <button class="toolbar-btn">👤</button>
+            <button class="toolbar-btn">👥</button>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Tree Panel -->
+            <div class="tree-panel" id="treePanel">
+                <div class="tree-item" data-node="root">
+                    <span class="tree-expand">▼</span>
+                    <span class="tree-icon domain">🌐</span>
+                    <span>Active Directory Users and Computers</span>
+                </div>
+                <div class="tree-children expanded">
+                    <div class="tree-item" data-node="saved">
+                        <span class="tree-expand"></span>
+                        <span class="tree-icon folder">📁</span>
+                        <span>Saved Queries</span>
+                    </div>
+                    <div class="tree-item hotspot" data-node="domain" id="domainNode">
+                        <span class="tree-expand" id="domainExpand">▶</span>
+                        <span class="tree-icon domain">🌐</span>
+                        <span>shipddg112.spawar.navy.mil</span>
+                    </div>
+                    <div class="tree-children" id="domainChildren">
+                        <div class="tree-item">
+                            <span class="tree-expand"></span>
+                            <span class="tree-icon folder">📁</span>
+                            <span>Builtin</span>
+                        </div>
+                        <div class="tree-item">
+                            <span class="tree-expand"></span>
+                            <span class="tree-icon folder">📁</span>
+                            <span>Computers</span>
+                        </div>
+                        <div class="tree-item hotspot" data-node="canes" id="canesNode">
+                            <span class="tree-expand" id="canesExpand">▶</span>
+                            <span class="tree-icon ou">📂</span>
+                            <span>CANES Users and Computers</span>
+                        </div>
+                        <div class="tree-children" id="canesChildren">
+                            <div class="tree-item">
+                                <span class="tree-expand"></span>
+                                <span class="tree-icon folder">📁</span>
+                                <span>Admin Users</span>
+                            </div>
+                            <div class="tree-item">
+                                <span class="tree-expand"></span>
+                                <span class="tree-icon folder">📁</span>
+                                <span>Service Accounts</span>
+                            </div>
+                            <div class="tree-item hotspot" data-node="usa" id="usaNode">
+                                <span class="tree-expand">▶</span>
+                                <span class="tree-icon users">👥</span>
+                                <span>USA Users</span>
+                            </div>
+                        </div>
+                        <div class="tree-item">
+                            <span class="tree-expand"></span>
+                            <span class="tree-icon folder">📁</span>
+                            <span>Domain Controllers</span>
+                        </div>
+                        <div class="tree-item">
+                            <span class="tree-expand"></span>
+                            <span class="tree-icon folder">📁</span>
+                            <span>ForeignSecurityPrincipals</span>
+                        </div>
+                        <div class="tree-item">
+                            <span class="tree-expand"></span>
+                            <span class="tree-icon folder">📁</span>
+                            <span>Users</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Panel -->
+            <div class="content-panel" id="contentPanel">
+                <div class="content-header">Select a container to view its contents</div>
+                <div class="user-list" id="userList"></div>
+            </div>
+        </div>
+
+        <!-- Context Menu -->
+        <div class="context-menu" id="contextMenu">
+            <div class="context-item disabled">Delegate Control...</div>
+            <div class="context-separator"></div>
+            <div class="context-item disabled">Find...</div>
+            <div class="context-separator"></div>
+            <div class="context-item has-submenu hotspot" id="newMenuItem">
+                New
+                <div class="submenu" id="newSubmenu">
+                    <div class="context-item hotspot" id="newUserItem">👤 User</div>
+                    <div class="context-item">👥 Group</div>
+                    <div class="context-item">🖥️ Computer</div>
+                    <div class="context-item">📂 Organizational Unit</div>
+                    <div class="context-separator"></div>
+                    <div class="context-item">📋 Contact</div>
+                </div>
+            </div>
+            <div class="context-separator"></div>
+            <div class="context-item disabled">All Tasks</div>
+            <div class="context-item disabled">Refresh</div>
+            <div class="context-separator"></div>
+            <div class="context-item disabled">Properties</div>
+            <div class="context-item disabled">Help</div>
+        </div>
+
+        <!-- New User Dialog -->
+        <div class="dialog-overlay" id="newUserDialog">
+            <div class="dialog">
+                <div class="dialog-titlebar">
+                    <div class="dialog-title">
+                        <span class="dialog-title-icon">👤</span>
+                        New Object - User
+                    </div>
+                    <button class="dialog-close" onclick="closeDialog('newUserDialog')">✕</button>
+                </div>
+                <div class="dialog-body">
+                    <p style="margin-bottom: 15px; color: #666;">Create in: shipddg112.spawar.navy.mil/CANES Users and Computers/USA Users</p>
+                    
+                    <div class="form-row">
+                        <label class="form-label">First name:</label>
+                        <input type="text" class="form-input hotspot" id="firstName" placeholder="">
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">Last name:</label>
+                        <input type="text" class="form-input hotspot" id="lastName" placeholder="">
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">Full name:</label>
+                        <input type="text" class="form-input" id="fullName" readonly style="background: #f0f0f0;">
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">User logon name:</label>
+                        <input type="text" class="form-input hotspot" id="logonName" placeholder="">
+                        <span style="margin-left: 5px; color: #666;">@shipddg112.spawar.navy.mil</span>
+                    </div>
+                </div>
+                <div class="dialog-footer">
+                    <button class="dialog-btn" onclick="closeDialog('newUserDialog')">Cancel</button>
+                    <button class="dialog-btn primary hotspot" id="userNextBtn">Next &gt;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Password Dialog -->
+        <div class="dialog-overlay" id="passwordDialog">
+            <div class="dialog">
+                <div class="dialog-titlebar">
+                    <div class="dialog-title">
+                        <span class="dialog-title-icon">🔐</span>
+                        New Object - User
+                    </div>
+                    <button class="dialog-close" onclick="closeDialog('passwordDialog')">✕</button>
+                </div>
+                <div class="dialog-body">
+                    <div class="form-row">
+                        <label class="form-label">Password:</label>
+                        <input type="password" class="form-input hotspot" id="password" value="">
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">Confirm password:</label>
+                        <input type="password" class="form-input hotspot" id="confirmPassword" value="">
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <input type="checkbox" id="mustChange" checked>
+                            User must change password at next logon
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #999;">
+                            <input type="checkbox" disabled>
+                            User cannot change password
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #999;">
+                            <input type="checkbox" disabled>
+                            Password never expires
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" disabled>
+                            Account is disabled
+                        </label>
+                    </div>
+                </div>
+                <div class="dialog-footer">
+                    <button class="dialog-btn" onclick="goBackToUserDialog()">&lt; Back</button>
+                    <button class="dialog-btn primary hotspot" id="passwordNextBtn">Next &gt;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Properties (Add to Groups) Dialog -->
+        <div class="dialog-overlay" id="userPropertiesDialog">
+            <div class="dialog" style="min-width: 500px;">
+                <div class="dialog-titlebar">
+                    <div class="dialog-title">
+                        <span class="dialog-title-icon">👤</span>
+                        <span id="propsUserName">User</span> Properties
+                    </div>
+                    <button class="dialog-close" onclick="closeDialog('userPropertiesDialog')">✕</button>
+                </div>
+                <div class="dialog-body">
+                    <!-- Tabs -->
+                    <div style="display: flex; border-bottom: 1px solid #ccc; margin-bottom: 15px;">
+                        <div style="padding: 8px 15px; border: 1px solid #ccc; border-bottom: none; background: #fff; margin-bottom: -1px;">Member Of</div>
+                        <div style="padding: 8px 15px; color: #666;">General</div>
+                        <div style="padding: 8px 15px; color: #666;">Account</div>
+                        <div style="padding: 8px 15px; color: #666;">Profile</div>
+                    </div>
+                    
+                    <p style="margin-bottom: 10px;">Member of:</p>
+                    <div class="selected-groups" id="selectedGroups">
+                        <div class="selected-group-tag">Domain Users</div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <button class="dialog-btn hotspot" id="addGroupBtn">Add...</button>
+                        <button class="dialog-btn" disabled>Remove</button>
+                    </div>
+                </div>
+                <div class="dialog-footer">
+                    <button class="dialog-btn" onclick="closeDialog('userPropertiesDialog')">Cancel</button>
+                    <button class="dialog-btn primary hotspot" id="propsOkBtn">OK</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Select Groups Dialog -->
+        <div class="dialog-overlay" id="selectGroupsDialog">
+            <div class="dialog" style="min-width: 500px;">
+                <div class="dialog-titlebar">
+                    <div class="dialog-title">
+                        <span class="dialog-title-icon">👥</span>
+                        Select Groups
+                    </div>
+                    <button class="dialog-close" onclick="closeDialog('selectGroupsDialog')">✕</button>
+                </div>
+                <div class="dialog-body">
+                    <p style="margin-bottom: 10px;">Select the groups to add this user to:</p>
+                    <div class="group-list" id="groupList">
+                        <div class="group-item hotspot" data-group="Combat Systems" id="groupCS">
+                            <span>👥</span> Combat Systems
+                        </div>
+                        <div class="group-item hotspot" data-group="All Hands" id="groupAllHands">
+                            <span>👥</span> All Hands
+                        </div>
+                        <div class="group-item hotspot" data-group="CS-Div" id="groupCSDiv">
+                            <span>👥</span> CS-Div
+                        </div>
+                        <div class="group-item" data-group="Engineering">
+                            <span>👥</span> Engineering
+                        </div>
+                        <div class="group-item" data-group="Operations">
+                            <span>👥</span> Operations
+                        </div>
+                        <div class="group-item" data-group="Navigation">
+                            <span>👥</span> Navigation
+                        </div>
+                        <div class="group-item" data-group="Supply">
+                            <span>👥</span> Supply
+                        </div>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.8rem; color: #666;">Hold Ctrl to select multiple groups</p>
+                </div>
+                <div class="dialog-footer">
+                    <button class="dialog-btn" onclick="closeDialog('selectGroupsDialog')">Cancel</button>
+                    <button class="dialog-btn primary hotspot" id="selectGroupsOkBtn">OK</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Instruction Panel -->
+        <div class="instruction-panel">
+            <div class="instruction-header">
+                <div class="step-indicator" id="stepIndicator">Step 1 of 12</div>
+                <div class="mode-toggle">
+                    <button class="mode-btn active" id="guidedModeBtn" onclick="setMode('guided')">Guided</button>
+                    <button class="mode-btn" id="practiceModeBtn" onclick="setMode('practice')">Practice</button>
+                </div>
+            </div>
+            <div class="instruction-text" id="instructionText">
+                Click on <span class="highlight">shipddg112.spawar.navy.mil</span> to expand the domain tree.
+            </div>
+            <div class="feedback" id="feedback"></div>
+            <div class="control-buttons">
+                <button class="control-btn reset" onclick="resetSimulation()">↺ Start Over</button>
+                <button class="control-btn hint" onclick="showHint()" id="hintBtn">💡 Show Hint</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Completion Screen -->
+    <div class="completion-screen" id="completionScreen">
+        <div class="completion-content">
+            <div class="completion-icon">🎉</div>
+            <div class="completion-title">Simulation Complete!</div>
+            <div class="completion-subtitle">You successfully created a user account and added them to the required groups.</div>
+            <button class="completion-btn" onclick="resetSimulation()">Try Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Simulation State
+        let currentStep = 1;
+        let mode = 'guided'; // 'guided' or 'practice'
+        let selectedGroups = [];
+        const requiredGroups = ['Combat Systems', 'All Hands', 'CS-Div'];
+        
+        // Step definitions
+        const steps = [
+            {
+                id: 1,
+                instruction: 'Click on <span class="highlight">shipddg112.spawar.navy.mil</span> to expand the domain tree.',
+                hotspot: 'domainNode',
+                action: 'expandDomain',
+                hint: 'Look for the domain name in the left panel tree view.'
+            },
+            {
+                id: 2,
+                instruction: 'Now expand <span class="highlight">CANES Users and Computers</span> to see the organizational units.',
+                hotspot: 'canesNode',
+                action: 'expandCanes',
+                hint: 'Find the CANES folder under the domain.'
+            },
+            {
+                id: 3,
+                instruction: 'Right-click on <span class="highlight">USA Users</span> to open the context menu.',
+                hotspot: 'usaNode',
+                action: 'rightClickUSA',
+                hint: 'Right-click (not left-click) on the USA Users folder.'
+            },
+            {
+                id: 4,
+                instruction: 'Hover over <span class="highlight">New</span> to see the submenu.',
+                hotspot: 'newMenuItem',
+                action: 'hoverNew',
+                hint: 'Move your mouse over the "New" option in the menu.'
+            },
+            {
+                id: 5,
+                instruction: 'Click on <span class="highlight">User</span> to create a new user account.',
+                hotspot: 'newUserItem',
+                action: 'clickNewUser',
+                hint: 'Select "User" from the New submenu.'
+            },
+            {
+                id: 6,
+                instruction: 'Enter the first name: <span class="highlight">John</span>',
+                hotspot: 'firstName',
+                action: 'enterFirstName',
+                hint: 'Type "John" in the First name field.'
+            },
+            {
+                id: 7,
+                instruction: 'Enter the last name: <span class="highlight">Smith</span>',
+                hotspot: 'lastName',
+                action: 'enterLastName',
+                hint: 'Type "Smith" in the Last name field.'
+            },
+            {
+                id: 8,
+                instruction: 'Enter the user logon name: <span class="highlight">jsmith</span>',
+                hotspot: 'logonName',
+                action: 'enterLogonName',
+                hint: 'Type "jsmith" in the User logon name field.'
+            },
+            {
+                id: 9,
+                instruction: 'Click <span class="highlight">Next</span> to continue to password setup.',
+                hotspot: 'userNextBtn',
+                action: 'clickUserNext',
+                hint: 'Click the Next button at the bottom of the dialog.'
+            },
+            {
+                id: 10,
+                instruction: 'Enter a password and confirm it, then click <span class="highlight">Next</span>.',
+                hotspot: 'passwordNextBtn',
+                action: 'clickPasswordNext',
+                hint: 'Enter a password in both fields, then click Next.'
+            },
+            {
+                id: 11,
+                instruction: 'Click <span class="highlight">Add...</span> to add the user to groups.',
+                hotspot: 'addGroupBtn',
+                action: 'clickAddGroup',
+                hint: 'Click the Add button to open the group selection.'
+            },
+            {
+                id: 12,
+                instruction: 'Select <span class="highlight">Combat Systems</span>, <span class="highlight">All Hands</span>, and <span class="highlight">CS-Div</span>, then click OK.',
+                hotspot: null,
+                action: 'selectGroups',
+                hint: 'Click on each required group to select them.'
+            },
+            {
+                id: 13,
+                instruction: 'Click <span class="highlight">OK</span> to finish adding the user.',
+                hotspot: 'propsOkBtn',
+                action: 'finishUser',
+                hint: 'Click OK to save the changes.'
+            }
+        ];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            updateStep();
+        });
+
+        function setupEventListeners() {
+            // Domain node click
+            document.getElementById('domainNode').addEventListener('click', () => {
+                if (currentStep === 1) {
+                    expandDomain();
+                    advanceStep();
+                } else {
+                    showFeedback('error', 'Not yet! ' + steps[currentStep - 1].hint);
+                }
+            });
+
+            // CANES node click
+            document.getElementById('canesNode').addEventListener('click', () => {
+                if (currentStep === 2) {
+                    expandCanes();
+                    advanceStep();
+                } else if (currentStep > 2) {
+                    // Allow re-clicking after expanded
+                } else {
+                    showFeedback('error', 'Not yet! First, expand the domain tree.');
+                }
+            });
+
+            // USA Users right-click
+            document.getElementById('usaNode').addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                if (currentStep === 3) {
+                    showContextMenu(e);
+                    advanceStep();
+                } else if (currentStep < 3) {
+                    showFeedback('error', 'Not yet! First, navigate to the USA Users folder.');
+                }
+            });
+
+            // USA Users left-click (wrong action)
+            document.getElementById('usaNode').addEventListener('click', () => {
+                if (currentStep === 3) {
+                    showFeedback('error', 'Almost! You need to RIGHT-click to open the context menu.');
+                }
+            });
+
+            // New menu item hover
+            document.getElementById('newMenuItem').addEventListener('mouseenter', () => {
+                if (currentStep === 4) {
+                    advanceStep();
+                }
+            });
+
+            // New User click
+            document.getElementById('newUserItem').addEventListener('click', () => {
+                if (currentStep === 5) {
+                    hideContextMenu();
+                    showDialog('newUserDialog');
+                    advanceStep();
+                }
+            });
+
+            // Form inputs
+            document.getElementById('firstName').addEventListener('input', (e) => {
+                updateFullName();
+                if (currentStep === 6 && e.target.value.toLowerCase() === 'john') {
+                    advanceStep();
+                }
+            });
+
+            document.getElementById('lastName').addEventListener('input', (e) => {
+                updateFullName();
+                if (currentStep === 7 && e.target.value.toLowerCase() === 'smith') {
+                    advanceStep();
+                }
+            });
+
+            document.getElementById('logonName').addEventListener('input', (e) => {
+                if (currentStep === 8 && e.target.value.toLowerCase() === 'jsmith') {
+                    advanceStep();
+                }
+            });
+
+            // Next button on user dialog
+            document.getElementById('userNextBtn').addEventListener('click', () => {
+                if (currentStep >= 6 && currentStep <= 9) {
+                    const firstName = document.getElementById('firstName').value.trim().toLowerCase();
+                    const lastName = document.getElementById('lastName').value.trim().toLowerCase();
+                    const logonName = document.getElementById('logonName').value.trim().toLowerCase();
+                    
+                    // Check what's missing
+                    if (!firstName) {
+                        showFeedback('error', 'Please enter the first name: John');
+                        document.getElementById('firstName').focus();
+                        return;
+                    }
+                    if (firstName !== 'john') {
+                        showFeedback('error', 'Enter "John" as the first name.');
+                        document.getElementById('firstName').focus();
+                        return;
+                    }
+                    if (!lastName) {
+                        showFeedback('error', 'Please enter the last name: Smith');
+                        document.getElementById('lastName').focus();
+                        return;
+                    }
+                    if (lastName !== 'smith') {
+                        showFeedback('error', 'Enter "Smith" as the last name.');
+                        document.getElementById('lastName').focus();
+                        return;
+                    }
+                    if (!logonName) {
+                        showFeedback('error', 'Please enter the user logon name: jsmith');
+                        document.getElementById('logonName').focus();
+                        return;
+                    }
+                    if (logonName !== 'jsmith') {
+                        showFeedback('error', 'Enter "jsmith" as the logon name.');
+                        document.getElementById('logonName').focus();
+                        return;
+                    }
+                    
+                    // All good - advance
+                    currentStep = 10; // Jump to password step
+                    closeDialog('newUserDialog');
+                    showDialog('passwordDialog');
+                    updateStep();
+                    showFeedback('success', 'Correct! ✓');
+                    setTimeout(() => hideFeedback(), 1500);
+                }
+            });
+
+            // Password dialog next
+            document.getElementById('passwordNextBtn').addEventListener('click', () => {
+                if (currentStep === 10) {
+                    const password = document.getElementById('password').value;
+                    const confirm = document.getElementById('confirmPassword').value;
+                    
+                    if (password && password === confirm) {
+                        closeDialog('passwordDialog');
+                        document.getElementById('propsUserName').textContent = 'John Smith';
+                        showDialog('userPropertiesDialog');
+                        advanceStep();
+                    } else {
+                        showFeedback('error', 'Passwords must match and cannot be empty.');
+                    }
+                }
+            });
+
+            // Add group button
+            document.getElementById('addGroupBtn').addEventListener('click', () => {
+                if (currentStep === 11) {
+                    showDialog('selectGroupsDialog');
+                    advanceStep();
+                }
+            });
+
+            // Group selection
+            document.querySelectorAll('.group-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    if (currentStep === 12) {
+                        item.classList.toggle('selected');
+                        const groupName = item.dataset.group;
+                        
+                        if (item.classList.contains('selected')) {
+                            if (!selectedGroups.includes(groupName)) {
+                                selectedGroups.push(groupName);
+                            }
+                        } else {
+                            selectedGroups = selectedGroups.filter(g => g !== groupName);
+                        }
+                        
+                        // Check if all required groups are selected
+                        const allSelected = requiredGroups.every(g => selectedGroups.includes(g));
+                        if (allSelected) {
+                            showFeedback('success', 'All required groups selected! Now click OK.');
+                        }
+                    }
+                });
+            });
+
+            // Select groups OK
+            document.getElementById('selectGroupsOkBtn').addEventListener('click', () => {
+                if (currentStep === 12) {
+                    const allSelected = requiredGroups.every(g => selectedGroups.includes(g));
+                    if (allSelected) {
+                        closeDialog('selectGroupsDialog');
+                        updateSelectedGroupsDisplay();
+                        advanceStep();
+                    } else {
+                        const missing = requiredGroups.filter(g => !selectedGroups.includes(g));
+                        showFeedback('error', `Still need to select: ${missing.join(', ')}`);
+                    }
+                }
+            });
+
+            // Properties OK (finish)
+            document.getElementById('propsOkBtn').addEventListener('click', () => {
+                if (currentStep === 13) {
+                    closeDialog('userPropertiesDialog');
+                    showCompletion();
+                }
+            });
+
+            // Close context menu on click elsewhere
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.context-menu') && !e.target.closest('.tree-item')) {
+                    hideContextMenu();
+                }
+            });
+        }
+
+        function expandDomain() {
+            document.getElementById('domainExpand').textContent = '▼';
+            document.getElementById('domainChildren').classList.add('expanded');
+            document.getElementById('domainNode').classList.add('selected');
+        }
+
+        function expandCanes() {
+            document.getElementById('canesExpand').textContent = '▼';
+            document.getElementById('canesChildren').classList.add('expanded');
+            document.getElementById('canesNode').classList.add('selected');
+        }
+
+        function showContextMenu(e) {
+            const menu = document.getElementById('contextMenu');
+            menu.style.left = e.pageX + 'px';
+            menu.style.top = e.pageY + 'px';
+            menu.classList.add('visible');
+        }
+
+        function hideContextMenu() {
+            document.getElementById('contextMenu').classList.remove('visible');
+        }
+
+        function showDialog(id) {
+            document.getElementById(id).classList.add('visible');
+        }
+
+        function closeDialog(id) {
+            document.getElementById(id).classList.remove('visible');
+        }
+
+        function goBackToUserDialog() {
+            closeDialog('passwordDialog');
+            showDialog('newUserDialog');
+        }
+
+        function updateFullName() {
+            const first = document.getElementById('firstName').value;
+            const last = document.getElementById('lastName').value;
+            document.getElementById('fullName').value = `${first} ${last}`.trim();
+        }
+
+        function updateSelectedGroupsDisplay() {
+            const container = document.getElementById('selectedGroups');
+            container.innerHTML = '<div class="selected-group-tag">Domain Users</div>';
+            selectedGroups.forEach(group => {
+                container.innerHTML += `<div class="selected-group-tag">${group}</div>`;
+            });
+        }
+
+        function advanceStep() {
+            currentStep++;
+            updateStep();
+            showFeedback('success', 'Correct! ✓');
+            setTimeout(() => hideFeedback(), 1500);
+        }
+
+        function updateStep() {
+            if (currentStep > steps.length) return;
+            
+            const step = steps[currentStep - 1];
+            
+            // Update step indicator
+            document.getElementById('stepIndicator').textContent = `Step ${currentStep} of ${steps.length}`;
+            
+            // Update instruction
+            document.getElementById('instructionText').innerHTML = step.instruction;
+            
+            // Update hotspots (only in guided mode)
+            document.querySelectorAll('.hotspot').forEach(el => el.classList.remove('active'));
+            
+            if (mode === 'guided' && step.hotspot) {
+                const hotspotEl = document.getElementById(step.hotspot);
+                if (hotspotEl) {
+                    hotspotEl.classList.add('active');
+                }
+            }
+        }
+
+        function setMode(newMode) {
+            mode = newMode;
+            document.getElementById('guidedModeBtn').classList.toggle('active', mode === 'guided');
+            document.getElementById('practiceModeBtn').classList.toggle('active', mode === 'practice');
+            
+            // Hide all hotspots in practice mode
+            if (mode === 'practice') {
+                document.querySelectorAll('.hotspot').forEach(el => el.classList.remove('active'));
+            } else {
+                updateStep();
+            }
+        }
+
+        function showFeedback(type, message) {
+            const feedback = document.getElementById('feedback');
+            feedback.className = `feedback visible ${type}`;
+            feedback.textContent = message;
+        }
+
+        function hideFeedback() {
+            document.getElementById('feedback').classList.remove('visible');
+        }
+
+        function showHint() {
+            if (currentStep <= steps.length) {
+                showFeedback('', '💡 ' + steps[currentStep - 1].hint);
+                document.getElementById('feedback').style.background = 'rgba(255, 193, 7, 0.2)';
+                document.getElementById('feedback').style.border = '1px solid #ffc107';
+                document.getElementById('feedback').style.color = '#ffd700';
+            }
+        }
+
+        function showCompletion() {
+            document.getElementById('completionScreen').classList.add('visible');
+        }
+
+        function resetSimulation() {
+            // Hide completion
+            document.getElementById('completionScreen').classList.remove('visible');
+            
+            // Reset state
+            currentStep = 1;
+            selectedGroups = [];
+            
+            // Collapse trees
+            document.getElementById('domainExpand').textContent = '▶';
+            document.getElementById('domainChildren').classList.remove('expanded');
+            document.getElementById('domainNode').classList.remove('selected');
+            
+            document.getElementById('canesExpand').textContent = '▶';
+            document.getElementById('canesChildren').classList.remove('expanded');
+            document.getElementById('canesNode').classList.remove('selected');
+            
+            // Close dialogs
+            document.querySelectorAll('.dialog-overlay').forEach(d => d.classList.remove('visible'));
+            hideContextMenu();
+            
+            // Clear form inputs
+            document.getElementById('firstName').value = '';
+            document.getElementById('lastName').value = '';
+            document.getElementById('fullName').value = '';
+            document.getElementById('logonName').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('confirmPassword').value = '';
+            
+            // Reset groups
+            document.querySelectorAll('.group-item').forEach(item => item.classList.remove('selected'));
+            document.getElementById('selectedGroups').innerHTML = '<div class="selected-group-tag">Domain Users</div>';
+            
+            // Update display
+            updateStep();
+            hideFeedback();
+        }
+    </script>
+</body>
+</html>

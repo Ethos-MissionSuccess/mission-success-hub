@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Conversation Trainer | Customer Scenario Practice</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-primary: #0f172a; --bg-secondary: #1e293b; --bg-tertiary: #334155;
+            --text-primary: #f1f5f9; --text-secondary: #94a3b8; --text-muted: #64748b;
+            --accent-blue: #3b82f6; --accent-green: #10b981; --accent-amber: #f59e0b; --accent-red: #ef4444;
+        }
+        body { font-family: 'IBM Plex Sans', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+        .hidden { display: none !important; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--bg-tertiary); flex-wrap: wrap; gap: 16px; }
+        .logo-section { display: flex; align-items: center; gap: 16px; }
+        .logo { font-size: 42px; }
+        .title { font-size: 26px; font-weight: 700; background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .badge { padding: 8px 16px; background: #1e3a5f; border-radius: 20px; font-size: 12px; font-weight: 600; color: #60a5fa; border: 1px solid var(--accent-blue); }
+        .intro-card { background: var(--bg-secondary); border-radius: 16px; padding: 28px; margin-bottom: 32px; border: 1px solid var(--bg-tertiary); }
+        .intro-title { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+        .intro-text { color: var(--text-secondary); line-height: 1.7; margin-bottom: 12px; }
+        .intro-list { color: var(--text-secondary); padding-left: 24px; margin-bottom: 16px; line-height: 1.9; }
+        .intro-note { color: var(--accent-amber); font-size: 14px; padding: 12px 16px; background: rgba(245, 158, 11, 0.1); border-radius: 8px; }
+        .section-title { font-size: 17px; font-weight: 600; margin-bottom: 20px; }
+        .scenario-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+        .scenario-card { background: var(--bg-secondary); border-radius: 14px; padding: 22px; border: 1px solid var(--bg-tertiary); border-left: 4px solid var(--accent-blue); transition: transform 0.2s; cursor: pointer; }
+        .scenario-card:hover { transform: translateY(-3px); }
+        .scenario-card.completed { border-left-color: var(--accent-green); }
+        .scenario-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .scenario-num { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+        .completed-mark { font-size: 12px; color: var(--accent-green); font-weight: 600; }
+        .scenario-title { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+        .scenario-subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; }
+        .customer-box { display: flex; align-items: center; gap: 12px; padding: 14px; background: var(--bg-primary); border-radius: 10px; margin-bottom: 14px; }
+        .customer-avatar { font-size: 28px; }
+        .customer-name { font-size: 14px; font-weight: 600; }
+        .customer-role { font-size: 11px; color: var(--text-muted); }
+        .difficulty { display: inline-block; padding: 4px 10px; background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); border-radius: 10px; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 16px; }
+        .start-btn { width: 100%; padding: 12px; background: var(--accent-blue); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+        .start-btn:hover { background: #2563eb; }
+        .scenario-view { display: flex; flex-direction: column; height: 100vh; }
+        .scenario-bar { padding: 14px 24px; background: var(--bg-secondary); border-bottom: 1px solid var(--bg-tertiary); }
+        .back-btn { background: none; border: none; color: var(--text-muted); font-size: 13px; cursor: pointer; font-family: inherit; margin-bottom: 10px; }
+        .back-btn:hover { color: var(--text-primary); }
+        .scenario-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .active-title { font-size: 17px; font-weight: 600; }
+        .turn-info { font-size: 13px; color: var(--text-muted); }
+        .warning-indicator { font-size: 12px; color: var(--accent-amber); margin-left: 15px; }
+        .progress { height: 4px; background: var(--bg-tertiary); border-radius: 2px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--accent-blue); transition: width 0.4s; }
+        .context-bar { display: flex; align-items: center; gap: 10px; padding: 10px 24px; background: var(--bg-primary); border-bottom: 1px solid var(--bg-secondary); font-size: 13px; }
+        .context-bar .customer-avatar { font-size: 22px; }
+        .chat { flex: 1; overflow-y: auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+        .msg { max-width: 75%; }
+        .msg.customer { align-self: flex-start; }
+        .msg.user { align-self: flex-end; }
+        .msg.system { align-self: center; max-width: 90%; }
+        .msg-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+        .msg-content { padding: 14px 18px; border-radius: 14px; line-height: 1.6; font-size: 14px; }
+        .msg.customer .msg-content { background: var(--bg-secondary); border: 1px solid var(--bg-tertiary); }
+        .msg.user .msg-content { background: var(--accent-blue); color: #fff; }
+        .msg.system .msg-content { background: rgba(239, 68, 68, 0.15); border: 1px solid var(--accent-red); color: var(--accent-red); text-align: center; font-style: italic; }
+        .input-area { padding: 16px 24px; background: var(--bg-secondary); border-top: 1px solid var(--bg-tertiary); }
+        .input-field { width: 100%; padding: 14px; background: var(--bg-primary); border: 1px solid var(--bg-tertiary); border-radius: 10px; color: var(--text-primary); font-size: 14px; resize: none; font-family: inherit; }
+        .input-field:focus { outline: none; border-color: var(--accent-blue); }
+        .input-field:disabled { opacity: 0.5; cursor: not-allowed; }
+        .input-row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; flex-wrap: wrap; gap: 10px; }
+        .input-hint { font-size: 11px; color: var(--text-muted); }
+        .send-btn { padding: 12px 24px; background: var(--accent-blue); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .feedback { max-width: 850px; margin: 0 auto; padding: 36px 24px; }
+        .feedback-header { text-align: center; margin-bottom: 36px; }
+        .feedback-label { font-size: 13px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 6px; }
+        .feedback-title { font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .early-end-notice { background: rgba(239, 68, 68, 0.1); border: 1px solid var(--accent-red); border-radius: 10px; padding: 16px; margin-bottom: 24px; text-align: center; }
+        .early-end-notice h3 { color: var(--accent-red); margin-bottom: 8px; }
+        .early-end-notice p { color: var(--text-secondary); font-size: 14px; }
+        .score-area { text-align: center; margin-bottom: 40px; }
+        .score-circle { position: relative; width: 140px; height: 140px; margin: 0 auto 20px; }
+        .score-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        .score-num { display: block; font-size: 42px; font-weight: 700; }
+        .score-lbl { display: block; font-size: 13px; color: var(--text-muted); }
+        .pass-badge { display: inline-block; padding: 8px 20px; border-radius: 16px; font-size: 13px; font-weight: 700; letter-spacing: 1px; }
+        .pass-badge.pass { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .pass-badge.fail { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .threshold { font-size: 13px; color: var(--text-muted); margin-top: 10px; }
+        .fb-section { margin-bottom: 32px; }
+        .fb-section-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+        .turn-card { background: var(--bg-secondary); border-radius: 10px; padding: 16px; margin-bottom: 12px; border: 1px solid var(--bg-tertiary); }
+        .turn-card.off-topic { border-color: var(--accent-red); }
+        .turn-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .turn-num { font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+        .turn-score { font-size: 16px; font-weight: 700; }
+        .off-topic-badge { font-size: 11px; background: rgba(239, 68, 68, 0.2); color: var(--accent-red); padding: 2px 8px; border-radius: 10px; margin-left: 10px; }
+        .criteria { margin-bottom: 10px; }
+        .criteria-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+        .criteria-icon { font-size: 12px; }
+        .criteria-icon.good { color: var(--accent-green); }
+        .criteria-icon.bad { color: var(--text-muted); }
+        .criteria-text { font-size: 12px; color: var(--text-secondary); }
+        .criteria-bar-bg { height: 5px; background: var(--bg-primary); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+        .criteria-bar { height: 100%; border-radius: 3px; }
+        .takeaway-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+        .takeaway-card { background: var(--bg-secondary); border-radius: 10px; padding: 16px; border: 1px solid var(--bg-tertiary); }
+        .takeaway-title { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+        .takeaway-list { padding-left: 18px; color: var(--text-secondary); font-size: 13px; line-height: 1.7; }
+        .fb-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+        .retry-btn { padding: 12px 24px; background: transparent; color: var(--text-secondary); border: 1px solid var(--bg-tertiary); border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+        .retry-btn:hover { border-color: var(--text-muted); color: var(--text-primary); }
+        .continue-btn { padding: 12px 24px; background: var(--accent-blue); color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+    </style>
+</head>
+<body>
+    <div id="home-view" class="container"></div>
+    <div id="scenario-view" class="scenario-view hidden"></div>
+    <div id="feedback-view" class="feedback hidden"></div>
+
+<script>
+const SCENARIOS = [
+    {
+        id: 1, title: "The Budget Objection", subtitle: "Navigate a prospect who needs help justifying the investment to leadership",
+        customer: { name: "Sarah Chen", role: "VP of Operations, Meridian Industries", avatar: "👩‍💼" },
+        difficulty: "CHALLENGING", passing: 70,
+        skills: ["Budget objection handling", "Value proposition", "ROI communication", "Leadership pitch support"],
+        mistakes: ["Promising specific timelines before budget is approved", "Making up cost numbers without proper analysis", "Not quantifying potential savings or ROI", "Being pushy instead of consultative"],
+        topicKeywords: ["budget", "cost", "price", "money", "invest", "save", "roi", "value", "afford", "expense", "funding", "leadership", "approve", "justify", "business", "solution", "help", "team", "time", "process", "software", "platform", "system"],
+        conversation: [
+            { customer: "Thanks for taking the time to meet. I attended your webinar last month and I think your solution might help my team. We've got some serious process inefficiencies, but I'll be honest — I don't have budget lined up yet. My CEO is skeptical about software costs right now. What can you tell me that might help me make the case?",
+              criteria: [{ key: "discovery", desc: "Asked about their specific challenges", weight: 25, keywords: ["what kind", "tell me about", "what are", "challenges", "pain points", "processes", "specific"] }, { key: "empathy", desc: "Acknowledged the budget challenge", weight: 15, keywords: ["understand", "challenge", "common", "hear that", "makes sense"] }, { key: "value", desc: "Mentioned potential savings or ROI", weight: 25, keywords: ["save", "cost", "time", "faster", "efficiency", "roi", "return", "value"] }, { key: "honest", desc: "Did not promise specific timeline", weight: 20, keywords: [], negative: ["guarantee", "definitely", "two weeks", "immediately"] }, { key: "help", desc: "Offered concrete help", weight: 15, keywords: ["case study", "roi calculator", "materials", "help you", "analysis", "data"] }] },
+            { customer: "We're spending way too much time on manual reporting — my team probably wastes 20 hours a week just pulling data together. But here's my problem: my CEO keeps asking 'why can't we just use the tools we already have?' What do I tell him?",
+              criteria: [{ key: "quantify", desc: "Helped quantify the problem", weight: 25, keywords: ["20 hours", "cost", "calculate", "salary", "per week", "per year", "dollars", "annually"] }, { key: "existing", desc: "Explained limitations of current tools", weight: 30, keywords: ["spreadsheet", "manual", "error", "scale", "integration", "automate", "built for"] }, { key: "diff", desc: "Differentiated your solution", weight: 25, keywords: ["purpose-built", "designed", "specifically", "unlike", "difference"] }, { key: "speed", desc: "Used efficiency framing", weight: 20, keywords: ["faster", "automated", "real-time", "instant", "streamline"] }] },
+            { customer: "Okay, that's helpful. He's also worried about getting locked into a long contract. What if our needs change? And what's this actually going to cost us ballpark?",
+              criteria: [{ key: "flex", desc: "Addressed flexibility concerns", weight: 25, keywords: ["flexible", "month-to-month", "scale", "adjust", "no lock-in", "cancel"] }, { key: "cost", desc: "Did not make up specific numbers", weight: 35, keywords: ["depends", "based on", "work with", "customize", "discovery", "needs assessment"], negative: ["$", "thousand", "hundred", "per month"] }, { key: "value", desc: "Reframed cost as investment", weight: 20, keywords: ["investment", "roi", "pay for itself", "savings", "return"] }, { key: "next", desc: "Offered proper cost discussion", weight: 20, keywords: ["call", "assessment", "discuss", "understand your needs", "scope"] }] },
+            { customer: "Let's say I can get the budget approved. What's realistic for timeline? My CEO wants results by end of quarter.",
+              criteria: [{ key: "depends", desc: "Explained timeline depends on factors", weight: 35, keywords: ["depends", "factors", "your team", "complexity", "scope"] }, { key: "steps", desc: "Outlined implementation process", weight: 25, keywords: ["onboarding", "steps", "process", "training", "setup", "phases"] }, { key: "noguarantee", desc: "Did not guarantee end of quarter", weight: 25, keywords: [], negative: ["guarantee", "definitely", "no problem", "absolutely", "easy"] }, { key: "partner", desc: "Positioned as partnership", weight: 15, keywords: ["together", "partner", "support", "we'll work", "collaborative"] }] },
+            { customer: "What do I need to bring to my CEO to get him to sign off? Like, what's the minimum viable pitch I can make?",
+              criteria: [{ key: "materials", desc: "Offered concrete materials", weight: 30, keywords: ["one-pager", "slides", "roi", "case study", "materials", "document", "proposal"] }, { key: "points", desc: "Summarized key benefits", weight: 30, keywords: ["save time", "save money", "efficiency", "faster", "reduce", "improve"] }, { key: "proof", desc: "Mentioned social proof", weight: 20, keywords: ["customers", "similar", "companies like", "results", "testimonial"] }, { key: "support", desc: "Offered to help prep", weight: 20, keywords: ["help", "join", "call", "prep", "support", "walk through"] }] },
+            { customer: "This is really helpful. One last thing — if my CEO asks about security and data privacy, what's the quick answer? We deal with sensitive customer information.",
+              criteria: [{ key: "security", desc: "Addressed security measures", weight: 35, keywords: ["encrypted", "secure", "compliant", "soc", "gdpr", "protected"] }, { key: "compliance", desc: "Mentioned relevant compliance", weight: 30, keywords: ["compliance", "certified", "audit", "standards", "regulations"] }, { key: "expert", desc: "Offered security deep-dive", weight: 20, keywords: ["security team", "deep dive", "technical", "details", "call"] }, { key: "confident", desc: "Conveyed confidence", weight: 15, keywords: ["priority", "seriously", "robust", "strong", "confident"] }] }
+        ]
+    },
+    {
+        id: 2, title: "The Legacy System", subtitle: "Help a prospect modernize without disrupting operations",
+        customer: { name: "David Reyes", role: "IT Director, Pacific Manufacturing", avatar: "👨‍💼" },
+        difficulty: "CHALLENGING", passing: 70,
+        skills: ["Technical objection handling", "Migration planning", "Risk mitigation", "Change management"],
+        mistakes: ["Dismissing their concerns about the legacy system", "Overpromising on migration timeline or downtime", "Not acknowledging the risks of change", "Being too technical without business context"],
+        topicKeywords: ["system", "software", "legacy", "old", "migrate", "migration", "move", "data", "integration", "downtime", "risk", "team", "work", "running", "server", "cloud", "modern", "update", "change", "process", "business"],
+        conversation: [
+            { customer: "Look, I'll be straight with you. My leadership is pushing hard for us to modernize, but I've got a system that's been running for 15 years. It's not pretty, it's not modern, but it works and people depend on it. I'm not convinced switching is going to work for us.",
+              criteria: [{ key: "empathy", desc: "Acknowledged the concern", weight: 20, keywords: ["understand", "valid", "hear", "concern", "common", "makes sense"] }, { key: "discovery", desc: "Asked clarifying questions", weight: 25, keywords: ["tell me", "what", "how", "describe", "currently", "specifically"] }, { key: "approach", desc: "Suggested careful approach", weight: 25, keywords: ["careful", "phased", "gradual", "step by step", "minimize"] }, { key: "migration", desc: "Mentioned migration support", weight: 30, keywords: ["migrate", "transition", "move", "support", "help"] }] },
+            { customer: "It's a custom-built application running on our own servers. Classic setup from the early 2000s. My team knows how to keep it running but nobody wants to touch the code — the original developers left years ago. Can you even handle something like this?",
+              criteria: [{ key: "experience", desc: "Referenced relevant experience", weight: 30, keywords: ["worked with", "similar", "customers", "experience", "legacy"] }, { key: "integration", desc: "Discussed integration options", weight: 25, keywords: ["integrate", "connect", "api", "data", "sync"] }, { key: "resp", desc: "Clarified what you handle vs them", weight: 25, keywords: ["we handle", "you", "your team", "responsible", "support"] }, { key: "plan", desc: "Mentioned planning process", weight: 20, keywords: ["assessment", "plan", "analyze", "understand", "scope"] }] },
+            { customer: "Okay, but here's what keeps me up at night — we've got years of critical data in this system. If something goes wrong during migration, we could lose everything. How do I know this won't be a disaster?",
+              criteria: [{ key: "backup", desc: "Addressed data protection", weight: 40, keywords: ["backup", "protect", "preserve", "safe", "secure", "copy"] }, { key: "risk", desc: "Acknowledged and addressed risk", weight: 25, keywords: ["risk", "careful", "test", "validate", "verify"] }, { key: "process", desc: "Explained migration process", weight: 20, keywords: ["process", "steps", "phases", "staged", "incremental"] }, { key: "support", desc: "Emphasized support", weight: 15, keywords: ["support", "team", "help", "there for you", "guide"] }] },
+            { customer: "What about my team? These people have used this system for years. If we switch, I'm worried they'll revolt or productivity will tank during the transition.",
+              criteria: [{ key: "training", desc: "Addressed training needs", weight: 30, keywords: ["training", "learn", "teach", "onboard", "support"] }, { key: "change", desc: "Discussed change management", weight: 25, keywords: ["change", "transition", "adjust", "adoption", "gradually"] }, { key: "ease", desc: "Emphasized ease of use", weight: 25, keywords: ["easy", "intuitive", "simple", "user-friendly", "designed"] }, { key: "timeline", desc: "Realistic transition timeline", weight: 20, keywords: ["time", "ramp up", "expect", "normal", "period"] }] },
+            { customer: "And what happens during the migration itself? I can't have this system down for weeks. We have real business depending on it.",
+              criteria: [{ key: "plan", desc: "Emphasized careful planning", weight: 30, keywords: ["plan", "careful", "work with", "strategy", "minimize"] }, { key: "parallel", desc: "Mentioned parallel running", weight: 25, keywords: ["parallel", "both", "alongside", "transition", "cutover"] }, { key: "control", desc: "Customer controls timing", weight: 25, keywords: ["you control", "your timing", "when you're ready", "schedule", "convenient"] }, { key: "expert", desc: "Connect with technical experts", weight: 20, keywords: ["expert", "technical", "team", "specialist", "engineer"] }] },
+            { customer: "Alright, you've got my attention. What would the first step actually look like if we wanted to explore this seriously?",
+              criteria: [{ key: "discovery", desc: "Suggested discovery call", weight: 25, keywords: ["discovery", "call", "meeting", "discuss", "assessment"] }, { key: "assessment", desc: "Mentioned needs assessment", weight: 25, keywords: ["assessment", "understand", "analyze", "review", "evaluate"] }, { key: "demo", desc: "Offered demo or proof", weight: 25, keywords: ["demo", "show", "see", "pilot", "trial"] }, { key: "clear", desc: "Laid out clear next steps", weight: 25, keywords: ["first", "then", "next", "step", "process", "start"] }] }
+        ]
+    }
+];
+
+// Minimum relevance threshold - below this is considered off-topic
+const RELEVANCE_THRESHOLD = 15;
+const MAX_OFF_TOPIC = 2; // End meeting after this many consecutive off-topic responses
+
+let state = { view: 'home', scenario: null, turn: 0, messages: [], results: [], completed: [], offTopicCount: 0, meetingEnded: false };
+const homeView = document.getElementById('home-view');
+const scenarioView = document.getElementById('scenario-view');
+const feedbackView = document.getElementById('feedback-view');
+
+function init() { renderHome(); }
+
+function renderHome() {
+    state.view = 'home';
+    homeView.classList.remove('hidden');
+    scenarioView.classList.add('hidden');
+    feedbackView.classList.add('hidden');
+    homeView.innerHTML = '<div class="header"><div class="logo-section"><div class="logo">💼</div><div><h1 class="title">Sales Conversation Trainer</h1><p class="subtitle">Customer Scenario Practice</p></div></div><div class="badge">Interactive Training</div></div><div class="intro-card"><h2 class="intro-title">🎯 Training Overview</h2><p class="intro-text">Practice handling challenging customer conversations. You will engage with realistic scenarios that test your ability to:</p><ul class="intro-list"><li>Conduct effective discovery conversations</li><li>Handle objections professionally</li><li>Communicate value without overpromising</li><li>Build trust while being consultative</li></ul><p class="intro-note"><strong>Note:</strong> Stay focused on the customer\'s questions. If your responses are too far off-topic, the customer may end the meeting early!</p></div><h2 class="section-title">Select a Scenario</h2><div class="scenario-grid">' + SCENARIOS.map((s, i) => '<div class="scenario-card ' + (state.completed.includes(s.id) ? 'completed' : '') + '" onclick="startScenario(' + s.id + ')"><div class="scenario-header"><span class="scenario-num">Scenario ' + (i + 1) + '</span>' + (state.completed.includes(s.id) ? '<span class="completed-mark">✓ Completed</span>' : '') + '</div><h3 class="scenario-title">' + s.title + '</h3><p class="scenario-subtitle">' + s.subtitle + '</p><div class="customer-box"><span class="customer-avatar">' + s.customer.avatar + '</span><div><div class="customer-name">' + s.customer.name + '</div><div class="customer-role">' + s.customer.role + '</div></div></div><div class="difficulty">' + s.difficulty + '</div><button class="start-btn">' + (state.completed.includes(s.id) ? 'Retry Scenario' : 'Start Scenario') + '</button></div>').join('') + '</div>';
+}
+
+function startScenario(id) {
+    state.scenario = SCENARIOS.find(function(s) { return s.id === id; });
+    state.turn = 0;
+    state.messages = [{ role: 'customer', text: state.scenario.conversation[0].customer }];
+    state.results = [];
+    state.offTopicCount = 0;
+    state.meetingEnded = false;
+    renderScenario();
+}
+
+function renderScenario() {
+    homeView.classList.add('hidden');
+    feedbackView.classList.add('hidden');
+    scenarioView.classList.remove('hidden');
+    var s = state.scenario;
+    var progress = ((state.turn + 1) / s.conversation.length) * 100;
+    var warningHtml = state.offTopicCount > 0 ? '<span class="warning-indicator">⚠️ Stay on topic (' + state.offTopicCount + '/' + MAX_OFF_TOPIC + ')</span>' : '';
+    scenarioView.innerHTML = '<div class="scenario-bar"><button class="back-btn" onclick="renderHome()">← Back to Scenarios</button><div class="scenario-info"><h2 class="active-title">' + s.title + '</h2><span class="turn-info">Turn ' + (state.turn + 1) + ' of ' + s.conversation.length + warningHtml + '</span></div><div class="progress"><div class="progress-fill" style="width: ' + progress + '%"></div></div></div><div class="context-bar"><span class="customer-avatar">' + s.customer.avatar + '</span><div><strong>' + s.customer.name + '</strong> <span style="color: var(--text-muted)">• ' + s.customer.role + '</span></div></div><div class="chat" id="chat">' + state.messages.map(function(m) {
+        if (m.role === 'system') {
+            return '<div class="msg system"><div class="msg-content">' + m.text + '</div></div>';
+        }
+        return '<div class="msg ' + m.role + '"><div class="msg-label">' + (m.role === 'customer' ? s.customer.name : 'You') + '</div><div class="msg-content">' + m.text + '</div></div>';
+    }).join('') + '</div><div class="input-area"><textarea class="input-field" id="user-input" placeholder="' + (state.meetingEnded ? 'Meeting has ended' : 'Type your response to the customer...') + '" rows="3"' + (state.meetingEnded ? ' disabled' : '') + '></textarea><div class="input-row"><p class="input-hint">' + (state.meetingEnded ? 'Click "View Results" to see your debrief' : 'Press Enter to send, Shift+Enter for new line') + '</p>' + (state.meetingEnded ? '<button class="send-btn" onclick="renderFeedback()">View Results</button>' : '<button class="send-btn" onclick="submitResponse()">Send Response</button>') + '</div></div>';
+    if (!state.meetingEnded) {
+        document.getElementById('user-input').addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitResponse(); } });
+    }
+    setTimeout(function() { document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight; }, 100);
+}
+
+function checkRelevance(response, scenario) {
+    var lower = response.toLowerCase();
+    var relevanceScore = 0;
+
+    // Check against topic keywords
+    scenario.topicKeywords.forEach(function(kw) {
+        if (lower.indexOf(kw.toLowerCase()) !== -1) {
+            relevanceScore += 5;
+        }
+    });
+
+    // Check against current turn's criteria keywords
+    var turnData = scenario.conversation[state.turn];
+    turnData.criteria.forEach(function(c) {
+        if (c.keywords) {
+            c.keywords.forEach(function(kw) {
+                if (lower.indexOf(kw.toLowerCase()) !== -1) {
+                    relevanceScore += 3;
+                }
+            });
+        }
+    });
+
+    // Minimum word count check (very short responses are likely off-topic)
+    var wordCount = response.trim().split(/\s+/).length;
+    if (wordCount < 5) {
+        relevanceScore = Math.min(relevanceScore, 10);
+    }
+
+    return relevanceScore;
+}
+
+function submitResponse() {
+    var input = document.getElementById('user-input');
+    var text = input.value.trim();
+    if (!text || state.meetingEnded) return;
+
+    state.messages.push({ role: 'user', text: text });
+    var turnData = state.scenario.conversation[state.turn];
+    var scores = evaluate(text, turnData.criteria);
+    var relevance = checkRelevance(text, state.scenario);
+    var isOffTopic = relevance < RELEVANCE_THRESHOLD;
+
+    state.results.push({ turn: state.turn + 1, scores: scores, criteria: turnData.criteria, offTopic: isOffTopic, relevance: relevance });
+
+    if (isOffTopic) {
+        state.offTopicCount++;
+
+        if (state.offTopicCount >= MAX_OFF_TOPIC) {
+            // End the meeting
+            state.meetingEnded = true;
+            state.messages.push({
+                role: 'customer',
+                text: "I appreciate you taking the time to meet with me, but I don't feel like we're connecting on what I'm looking for. I think I need to explore other options. Thank you for your time."
+            });
+            state.messages.push({
+                role: 'system',
+                text: '⚠️ Meeting ended early due to off-topic responses. Click "View Results" to see your debrief and learn what you could have done differently.'
+            });
+            if (state.completed.indexOf(state.scenario.id) === -1) state.completed.push(state.scenario.id);
+            renderScenario();
+            return;
+        } else {
+            // Warning - customer redirects
+            var redirectMessages = [
+                "I'm not sure that answers my question. Let me rephrase — ",
+                "That's interesting, but I was really asking about — ",
+                "I appreciate that, but can we get back to what I was asking? "
+            ];
+            var redirect = redirectMessages[Math.floor(Math.random() * redirectMessages.length)];
+            state.messages.push({
+                role: 'customer',
+                text: redirect + turnData.customer
+            });
+            renderScenario();
+            return;
+        }
+    } else {
+        // Reset off-topic counter on good response
+        state.offTopicCount = 0;
+    }
+
+    if (state.turn < state.scenario.conversation.length - 1) {
+        state.turn++;
+        state.messages.push({ role: 'customer', text: state.scenario.conversation[state.turn].customer });
+        renderScenario();
+    } else {
+        if (state.completed.indexOf(state.scenario.id) === -1) state.completed.push(state.scenario.id);
+        renderFeedback();
+    }
+}
+
+function evaluate(response, criteria) {
+    var lower = response.toLowerCase();
+    var scores = {};
+    criteria.forEach(function(c) {
+        var score = 40;
+        if (c.keywords) c.keywords.forEach(function(kw) { if (lower.indexOf(kw.toLowerCase()) !== -1) score += 15; });
+        if (c.negative) {
+            c.negative.forEach(function(kw) { if (lower.indexOf(kw.toLowerCase()) !== -1) score -= 25; });
+            var hasNeg = c.negative.some(function(kw) { return lower.indexOf(kw.toLowerCase()) !== -1; });
+            if (!hasNeg && c.keywords && c.keywords.length === 0) score += 30;
+        }
+        scores[c.key] = Math.max(0, Math.min(100, score));
+    });
+    return scores;
+}
+
+function calcOverall() {
+    var tw = 0, w = 0;
+    state.results.forEach(function(r) { r.criteria.forEach(function(c) { tw += (r.scores[c.key] || 0) * c.weight; w += c.weight; }); });
+    return w > 0 ? Math.round(tw / w) : 0;
+}
+
+function getColor(s) { return s >= 80 ? '#10b981' : s >= 70 ? '#f59e0b' : '#ef4444'; }
+
+function renderFeedback() {
+    homeView.classList.add('hidden');
+    scenarioView.classList.add('hidden');
+    feedbackView.classList.remove('hidden');
+    var s = state.scenario;
+    var overall = calcOverall();
+    var passed = overall >= s.passing && !state.meetingEnded;
+    var earlyEndHtml = state.meetingEnded ? '<div class="early-end-notice"><h3>⚠️ Meeting Ended Early</h3><p>The customer ended the meeting because your responses were too far off-topic. Review the feedback below to see what they were looking for.</p></div>' : '';
+
+    feedbackView.innerHTML = '<div class="feedback-header"><p class="feedback-label">Scenario Complete</p><h1 class="feedback-title">' + s.title + '</h1></div>' + earlyEndHtml + '<div class="score-area"><div class="score-circle"><svg width="140" height="140" viewBox="0 0 140 140"><circle cx="70" cy="70" r="60" fill="none" stroke="#1e293b" stroke-width="10"/><circle cx="70" cy="70" r="60" fill="none" stroke="' + getColor(overall) + '" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + (overall * 3.77) + ' 377" style="transform: rotate(-90deg); transform-origin: center;"/></svg><div class="score-text"><span class="score-num">' + overall + '</span><span class="score-lbl">' + (state.meetingEnded ? 'Incomplete' : overall >= 90 ? 'Excellent' : overall >= 80 ? 'Proficient' : overall >= 70 ? 'Passing' : 'Needs Work') + '</span></div></div><div class="pass-badge ' + (passed ? 'pass' : 'fail') + '">' + (passed ? '✓ PASSING' : state.meetingEnded ? '✗ MEETING ENDED EARLY' : '✗ NEEDS IMPROVEMENT') + '</div><p class="threshold">Passing threshold: ' + s.passing + '%</p></div><div class="fb-section"><h3 class="fb-section-title">📊 Turn-by-Turn Breakdown</h3>' + state.results.map(function(r) { var ts = Math.round(r.criteria.reduce(function(sum, c) { return sum + r.scores[c.key] * c.weight; }, 0) / r.criteria.reduce(function(sum, c) { return sum + c.weight; }, 0)); return '<div class="turn-card' + (r.offTopic ? ' off-topic' : '') + '"><div class="turn-header"><span class="turn-num">Turn ' + r.turn + (r.offTopic ? '<span class="off-topic-badge">Off-Topic</span>' : '') + '</span><span class="turn-score" style="color: ' + getColor(ts) + '">' + ts + '%</span></div><div class="criteria">' + r.criteria.map(function(c) { return '<div class="criteria-row"><span class="criteria-icon ' + (r.scores[c.key] >= 70 ? 'good' : 'bad') + '">' + (r.scores[c.key] >= 70 ? '✓' : '○') + '</span><span class="criteria-text">' + c.desc + '</span></div><div class="criteria-bar-bg"><div class="criteria-bar" style="width: ' + r.scores[c.key] + '%; background: ' + getColor(r.scores[c.key]) + '"></div></div>'; }).join('') + '</div></div>'; }).join('') + '</div><div class="fb-section"><h3 class="fb-section-title">💡 Key Takeaways</h3><div class="takeaway-grid"><div class="takeaway-card"><h4 class="takeaway-title">Skills Tested</h4><ul class="takeaway-list">' + s.skills.map(function(sk) { return '<li>' + sk + '</li>'; }).join('') + '</ul></div><div class="takeaway-card"><h4 class="takeaway-title">Common Mistakes to Avoid</h4><ul class="takeaway-list">' + s.mistakes.map(function(m) { return '<li>' + m + '</li>'; }).join('') + '</ul></div></div></div><div class="fb-actions"><button class="retry-btn" onclick="startScenario(' + s.id + ')">🔄 Retry This Scenario</button><button class="continue-btn" onclick="renderHome()">Continue to Next Scenario →</button></div>';
+}
+
+init();
+</script>
+</body>
+</html>

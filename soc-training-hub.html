@@ -1,0 +1,2634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOC Analyst Training Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #11152A;
+            --bg-secondary: #2D374E;
+            --bg-tertiary: #3C4A68;
+            --accent: #EA2139;
+            --accent-hover: #ff3a4f;
+            --text-primary: #F9F9FA;
+            --text-secondary: #D0D4DD;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --info: #3B82F6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+        }
+
+        .login-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 48px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-logo-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .login-logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .login-logo p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--bg-tertiary);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: #4a5a7a;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: #1a1a1a;
+        }
+
+        .btn-warning:hover {
+            background: #fbbf24;
+        }
+
+        /* Main App */
+        .app {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .app.active {
+            display: block;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-brand-icon {
+            font-size: 28px;
+        }
+
+        .header-brand h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-progress {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            background: var(--bg-secondary);
+            padding: 0 32px;
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .nav-tab {
+            padding: 16px 24px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-tab:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-tab.active {
+            color: var(--text-primary);
+            border-bottom-color: var(--accent);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Dashboard View */
+        .dashboard-view {
+            display: block;
+        }
+
+        .dashboard-view.hidden {
+            display: none;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            margin-top: -16px;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        /* Module Cards Grid */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 48px;
+        }
+
+        .module-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card:hover:not(.locked) {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px -12px rgba(234, 33, 57, 0.3);
+        }
+
+        .module-card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .module-card.completed {
+            border-color: var(--success);
+        }
+
+        .module-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+
+        .module-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .module-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .module-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .module-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .module-status.available {
+            color: var(--info);
+        }
+
+        .module-status.completed {
+            color: var(--success);
+        }
+
+        .module-status.locked {
+            color: var(--text-secondary);
+        }
+
+        .module-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Skills Overview Card */
+        .skills-overview {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 32px;
+        }
+
+        .skills-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .skills-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .view-details-btn {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .view-details-btn:hover {
+            background: #4a5a7a;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .skill-item {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .skill-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .skill-bar {
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .skill-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .skill-bar-fill.expert { background: var(--success); width: 100%; }
+        .skill-bar-fill.strong { background: var(--success); width: 80%; }
+        .skill-bar-fill.developing { background: var(--warning); width: 60%; }
+        .skill-bar-fill.needs-work { background: var(--accent); width: 40%; }
+        .skill-bar-fill.not-tested { background: var(--bg-tertiary); width: 20%; }
+
+        .skill-level {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Module View */
+        .module-view {
+            display: none;
+            min-height: calc(100vh - 140px);
+        }
+
+        .module-view.active {
+            display: block;
+        }
+
+        .module-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .back-btn:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .module-progress {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Timer */
+        .timer-display {
+            background: var(--bg-secondary);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 24px;
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+        .timer-display.warning {
+            color: var(--warning);
+            animation: pulse 1s infinite;
+        }
+
+        .timer-display.critical {
+            color: var(--accent);
+            animation: pulse 0.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Alert Triage Module */
+        .triage-container {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 24px;
+            height: calc(100vh - 280px);
+        }
+
+        .alert-queue {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .queue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .queue-title {
+            font-weight: 700;
+        }
+
+        .queue-count {
+            background: var(--accent);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .alert-item {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .alert-item:hover {
+            border-color: var(--bg-tertiary);
+        }
+
+        .alert-item.active {
+            border-color: var(--accent);
+        }
+
+        .alert-item.answered {
+            opacity: 0.5;
+            border-color: var(--bg-tertiary);
+        }
+
+        .alert-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .alert-item-title {
+            font-size: 14px;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .severity-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .severity-badge.critical { background: var(--accent); color: white; }
+        .severity-badge.high { background: #F59E0B; color: #1a1a1a; }
+        .severity-badge.medium { background: #3B82F6; color: white; }
+        .severity-badge.low { background: var(--bg-tertiary); color: var(--text-secondary); }
+
+        .alert-item-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Alert Detail Panel */
+        .alert-detail {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .alert-detail-header {
+            margin-bottom: 24px;
+        }
+
+        .alert-detail-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .alert-detail-meta {
+            display: flex;
+            gap: 24px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            flex-wrap: wrap;
+        }
+
+        .detail-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--bg-tertiary);
+            padding-bottom: 12px;
+        }
+
+        .detail-tab {
+            padding: 8px 16px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .detail-tab:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .detail-tab.active {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .detail-content {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .detail-content p {
+            margin-bottom: 12px;
+        }
+
+        .detail-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .log-entries {
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 13px;
+        }
+
+        .log-entry {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--bg-tertiary);
+            display: flex;
+            gap: 16px;
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-time {
+            color: var(--text-secondary);
+            min-width: 80px;
+        }
+
+        .log-level {
+            min-width: 50px;
+            font-weight: 600;
+        }
+
+        .log-level.warn { color: var(--warning); }
+        .log-level.error { color: var(--accent); }
+        .log-level.info { color: var(--info); }
+
+        .log-msg {
+            color: var(--text-primary);
+        }
+
+        /* Decision Panel */
+        .decision-panel {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .decision-title {
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .decision-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .decision-btn {
+            padding: 16px;
+            border: 2px solid var(--bg-tertiary);
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .decision-btn:hover:not(:disabled) {
+            border-color: var(--accent);
+            background: var(--bg-tertiary);
+        }
+
+        .decision-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .decision-btn.selected {
+            border-color: var(--accent);
+            background: var(--bg-tertiary);
+        }
+
+        .decision-icon {
+            font-size: 24px;
+        }
+
+        /* Priority Queue Module */
+        .priority-container {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 32px;
+        }
+
+        .priority-instruction {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .priority-instruction h3 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .priority-instruction p {
+            color: var(--text-secondary);
+        }
+
+        .priority-alerts {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .priority-alert {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: grab;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .priority-alert:hover {
+            border-color: var(--bg-tertiary);
+        }
+
+        .priority-alert.dragging {
+            opacity: 0.5;
+            border-color: var(--accent);
+        }
+
+        .priority-rank {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-tertiary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .priority-alert-info {
+            flex: 1;
+        }
+
+        .priority-alert-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .priority-alert-details {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .priority-submit {
+            text-align: center;
+        }
+
+        /* Red Flags Module */
+        .redflags-container {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 32px;
+        }
+
+        .redflags-alert {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .redflags-alert h3 {
+            margin-bottom: 16px;
+        }
+
+        .redflag-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .redflag-item {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .redflag-item:hover {
+            border-color: var(--bg-tertiary);
+        }
+
+        .redflag-item.selected {
+            border-color: var(--accent);
+            background: rgba(234, 33, 57, 0.1);
+        }
+
+        /* Escalation Builder Module */
+        .escalation-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .escalation-scenario {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .escalation-form {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .escalation-form h3 {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            margin-bottom: 16px;
+        }
+
+        .form-row label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .escalation-score {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .score-item:last-child {
+            border-bottom: none;
+        }
+
+        .score-check {
+            color: var(--success);
+        }
+
+        .score-missing {
+            color: var(--accent);
+        }
+
+        /* ==================== NEW: Results Screen Styles ==================== */
+        .results-screen {
+            display: none;
+            padding: 32px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .results-screen.active {
+            display: block;
+        }
+
+        /* Failed Results - Simple */
+        .results-failed {
+            text-align: center;
+            padding: 48px;
+        }
+
+        .results-failed-icon {
+            font-size: 80px;
+            margin-bottom: 24px;
+        }
+
+        .results-failed-score {
+            font-size: 72px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+
+        .results-failed-message {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .results-failed-requirement {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 32px;
+            display: inline-block;
+        }
+
+        .results-failed-requirement span {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        /* Passed Results - Detailed */
+        .results-passed {
+            text-align: center;
+        }
+
+        .results-header {
+            margin-bottom: 32px;
+        }
+
+        .results-passed-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .results-passed-score {
+            font-size: 56px;
+            font-weight: 700;
+            color: var(--success);
+            margin-bottom: 8px;
+        }
+
+        .results-passed-message {
+            font-size: 18px;
+            color: var(--text-secondary);
+        }
+
+        /* Turn Breakdown */
+        .turn-breakdown {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .turn-breakdown-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .turn-item {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .turn-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .turn-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .turn-number.correct {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .turn-number.incorrect {
+            background: rgba(234, 33, 57, 0.2);
+            color: var(--accent);
+        }
+
+        .turn-content {
+            flex: 1;
+        }
+
+        .turn-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .turn-detail {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .turn-detail .your-answer {
+            color: var(--text-primary);
+        }
+
+        .turn-detail .correct-answer {
+            color: var(--success);
+        }
+
+        .turn-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .turn-status-icon {
+            font-size: 20px;
+        }
+
+        .turn-explanation {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 12px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            border-left: 3px solid var(--accent);
+        }
+
+        .turn-explanation.correct-explanation {
+            border-left-color: var(--success);
+        }
+
+        /* Skills & Takeaways */
+        .results-insights {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .insight-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .insight-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .insight-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .insight-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+        }
+
+        .insight-icon {
+            font-size: 20px;
+        }
+
+        .insight-text {
+            font-size: 14px;
+        }
+
+        .insight-text.strength {
+            color: var(--success);
+        }
+
+        .insight-text.improve {
+            color: var(--warning);
+        }
+
+        /* Mistakes to Avoid */
+        .mistakes-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .mistakes-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--warning);
+        }
+
+        .mistake-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .mistake-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .mistake-icon {
+            color: var(--warning);
+            flex-shrink: 0;
+        }
+
+        /* Results Actions */
+        .results-actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .results-actions .btn {
+            min-width: 180px;
+        }
+
+        /* Analytics View */
+        .analytics-view {
+            display: none;
+        }
+
+        .analytics-view.active {
+            display: block;
+        }
+
+        .analytics-header {
+            margin-bottom: 32px;
+        }
+
+        .analytics-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .analytics-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .analytics-card-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .analytics-card-value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .analytics-card-value.accent { color: var(--accent); }
+        .analytics-card-value.success { color: var(--success); }
+        .analytics-card-value.warning { color: var(--warning); }
+
+        .analytics-section {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .analytics-section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .skill-detail-row {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: var(--bg-primary);
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+
+        .skill-detail-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .skill-detail-icon {
+            font-size: 28px;
+            margin-right: 16px;
+        }
+
+        .skill-detail-info {
+            flex: 1;
+        }
+
+        .skill-detail-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .skill-detail-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .skill-detail-level {
+            text-align: right;
+        }
+
+        .skill-detail-stars {
+            font-size: 18px;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+
+        .skill-detail-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .triage-container {
+                grid-template-columns: 1fr;
+            }
+
+            .alert-queue {
+                max-height: 300px;
+            }
+
+            .analytics-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .escalation-container {
+                grid-template-columns: 1fr;
+            }
+
+            .results-insights {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 16px;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .decision-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .analytics-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="login-screen">
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="login-logo-icon">🛡️</div>
+                <h1>SOC Analyst Training Hub</h1>
+                <p>Build your Tier 1 analyst skills</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="user-name">Full Name *</label>
+                    <input type="text" id="user-name" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-email">Email Address *</label>
+                    <input type="email" id="user-email" placeholder="Enter your email" required>
+                </div>
+                <button type="submit" class="btn btn-primary" id="start-btn" disabled>Start Training</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div class="app" id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-brand">
+                <span class="header-brand-icon">🛡️</span>
+                <h1>SOC Training Hub</h1>
+            </div>
+            <div class="header-user">
+                <div class="user-info">
+                    <div class="user-name" id="header-user-name">Analyst</div>
+                    <div class="user-progress" id="header-progress">0/5 Modules Complete</div>
+                </div>
+                <div class="user-avatar" id="user-avatar">A</div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-view="dashboard">Training Modules</button>
+            <button class="nav-tab" data-view="analytics">My Analytics</button>
+        </nav>
+
+        <main class="main-content">
+            <!-- Dashboard View -->
+            <div class="dashboard-view" id="dashboard-view">
+                <h2 class="section-title">Training Modules</h2>
+                <p class="section-subtitle">Complete each module to build your SOC analyst skills</p>
+
+                <div class="modules-grid" id="modules-grid"></div>
+
+                <div class="skills-overview">
+                    <div class="skills-header">
+                        <h3 class="skills-title">📊 Skills Overview</h3>
+                        <button class="view-details-btn" onclick="showAnalytics()">View Full Analytics</button>
+                    </div>
+                    <div class="skills-grid" id="skills-overview-grid"></div>
+                </div>
+            </div>
+
+            <!-- Module View -->
+            <div class="module-view" id="module-view">
+                <div class="module-header">
+                    <button class="back-btn" onclick="exitModule()">← Back to Dashboard</button>
+                    <div class="module-progress">
+                        <div class="progress-bar">
+                            <div class="progress-bar-fill" id="module-progress-bar" style="width: 0%"></div>
+                        </div>
+                        <span class="progress-text" id="module-progress-text">1 of 4</span>
+                    </div>
+                    <div class="timer-display hidden" id="timer-display">5:00</div>
+                </div>
+
+                <!-- Alert Triage Container -->
+                <div class="triage-container" id="triage-container">
+                    <div class="alert-queue">
+                        <div class="queue-header">
+                            <span class="queue-title">Alert Queue</span>
+                            <span class="queue-count" id="queue-count">4</span>
+                        </div>
+                        <div id="alert-queue-list"></div>
+                    </div>
+
+                    <div class="alert-detail" id="alert-detail">
+                        <div class="alert-detail-header">
+                            <h2 class="alert-detail-title" id="detail-title">Select an alert</h2>
+                            <div class="alert-detail-meta" id="detail-meta"></div>
+                        </div>
+
+                        <div class="detail-tabs">
+                            <button class="detail-tab active" data-tab="summary">Summary</button>
+                            <button class="detail-tab" data-tab="source">Source</button>
+                            <button class="detail-tab" data-tab="context">Context</button>
+                            <button class="detail-tab" data-tab="logs">Logs</button>
+                        </div>
+
+                        <div class="detail-content" id="detail-content">
+                            <p>Select an alert from the queue to view details.</p>
+                        </div>
+
+                        <div class="decision-panel" id="decision-panel">
+                            <div class="decision-title">What action should you take?</div>
+                            <div class="decision-buttons" id="decision-buttons">
+                                <button class="decision-btn" data-decision="escalate">
+                                    <span class="decision-icon">⬆️</span>
+                                    Escalate
+                                </button>
+                                <button class="decision-btn" data-decision="investigate">
+                                    <span class="decision-icon">🔍</span>
+                                    Investigate More
+                                </button>
+                                <button class="decision-btn" data-decision="close">
+                                    <span class="decision-icon">✓</span>
+                                    Close Alert
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Priority Queue Container -->
+                <div class="priority-container hidden" id="priority-container">
+                    <div class="priority-instruction">
+                        <h3>🎯 Rank These Alerts by Priority</h3>
+                        <p>Drag and drop to reorder. #1 should be handled first.</p>
+                    </div>
+                    <div class="priority-alerts" id="priority-alerts"></div>
+                    <div class="priority-submit">
+                        <button class="btn btn-primary" onclick="submitPriorityRanking()">Submit Ranking</button>
+                    </div>
+                </div>
+
+                <!-- Red Flags Container -->
+                <div class="redflags-container hidden" id="redflags-container">
+                    <div class="priority-instruction">
+                        <h3>🔍 Spot the Red Flags</h3>
+                        <p>Click on all the concerning details in this alert.</p>
+                    </div>
+                    <div class="redflags-alert" id="redflags-alert"></div>
+                    <div class="priority-submit">
+                        <button class="btn btn-primary" onclick="submitRedFlags()">Submit Selection</button>
+                    </div>
+                </div>
+
+                <!-- Escalation Builder Container -->
+                <div class="escalation-container hidden" id="escalation-container">
+                    <div class="escalation-scenario" id="escalation-scenario"></div>
+                    <div class="escalation-form">
+                        <h3>📝 Write Your Escalation</h3>
+                        <div class="form-row">
+                            <label for="esc-summary">Alert Summary</label>
+                            <input type="text" id="esc-summary" placeholder="Brief description of the alert">
+                            <div class="form-hint">What triggered this alert?</div>
+                        </div>
+                        <div class="form-row">
+                            <label for="esc-affected">Affected Assets</label>
+                            <input type="text" id="esc-affected" placeholder="Hostname, IP, Username">
+                            <div class="form-hint">Who/what is involved?</div>
+                        </div>
+                        <div class="form-row">
+                            <label for="esc-findings">Your Findings</label>
+                            <textarea id="esc-findings" placeholder="What did you discover during triage?"></textarea>
+                            <div class="form-hint">Steps you took and what you found</div>
+                        </div>
+                        <div class="form-row">
+                            <label for="esc-reason">Reason for Escalation</label>
+                            <textarea id="esc-reason" placeholder="Why does this need Tier 2 attention?"></textarea>
+                            <div class="form-hint">Specific red flags or concerns</div>
+                        </div>
+                        <div class="form-row">
+                            <label for="esc-urgency">Recommended Urgency</label>
+                            <select id="esc-urgency">
+                                <option value="">Select urgency level</option>
+                                <option value="immediate">Immediate - Active threat</option>
+                                <option value="high">High - Within 1 hour</option>
+                                <option value="medium">Medium - Within 4 hours</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="submitEscalation()">Submit Escalation</button>
+                    </div>
+                </div>
+
+                <!-- Results Screen -->
+                <div class="results-screen" id="results-screen">
+                    <!-- Content dynamically generated -->
+                </div>
+            </div>
+
+            <!-- Analytics View -->
+            <div class="analytics-view" id="analytics-view">
+                <div class="analytics-header">
+                    <h2 class="section-title">My Analytics</h2>
+                    <p class="section-subtitle">Track your progress and skill development</p>
+                </div>
+
+                <div class="analytics-cards">
+                    <div class="analytics-card">
+                        <div class="analytics-card-label">Modules Completed</div>
+                        <div class="analytics-card-value" id="analytics-modules">0/5</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-card-label">Overall Score</div>
+                        <div class="analytics-card-value accent" id="analytics-score">--%</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-card-label">Strongest Skill</div>
+                        <div class="analytics-card-value success" id="analytics-strength" style="font-size: 18px;">--</div>
+                    </div>
+                    <div class="analytics-card">
+                        <div class="analytics-card-label">Focus Area</div>
+                        <div class="analytics-card-value warning" id="analytics-focus" style="font-size: 18px;">--</div>
+                    </div>
+                </div>
+
+                <div class="analytics-section">
+                    <h3 class="analytics-section-title">Skill Proficiency</h3>
+                    <div id="analytics-skills-detail"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ==================== Configuration ====================
+        const ANALYTICS_ENDPOINT = "https://hook.us2.make.com/rter50f3q1gxs1st46fgx8z6m21kcc7w";
+        const PASS_THRESHOLD = 80; // 80% required to pass
+
+        // ==================== Data ====================
+        const MODULES = [
+            { id: 'alert-triage', title: 'Alert Triage', description: 'Learn to assess alerts and decide whether to escalate, investigate, or close.', icon: '🎯', time: '10-15 min', skills: ['Severity Assessment', 'Context Recognition', 'Escalation Judgment'] },
+            { id: 'priority-queue', title: 'Priority Queue', description: 'Practice prioritizing multiple alerts when everything seems urgent.', icon: '📊', time: '8-10 min', skills: ['Priority Ranking', 'Time Management', 'Critical Thinking'] },
+            { id: 'red-flags', title: 'Spot the Red Flags', description: 'Quickly identify the warning signs that indicate a real threat.', icon: '🔍', time: '5-8 min', skills: ['Context Recognition', 'Pattern Recognition', 'Attention to Detail'] },
+            { id: 'escalation-builder', title: 'Escalation Builder', description: 'Practice writing clear, actionable escalation reports for Tier 2.', icon: '📝', time: '10-12 min', skills: ['Documentation', 'Communication', 'Escalation Judgment'] },
+            { id: 'time-pressure', title: 'Time Pressure', description: 'Handle alerts under realistic time constraints with SLA countdown.', icon: '⏱️', time: '10 min', skills: ['Time Management', 'Decision Speed', 'Stress Management'] }
+        ];
+
+        const SKILLS = {
+            'Severity Assessment': { icon: '📊', desc: 'Correctly identifying alert severity levels', level: 'not-tested', score: 0, attempts: 0 },
+            'Context Recognition': { icon: '🔍', desc: 'Identifying contextual red flags (VIP, off-hours, geo)', level: 'not-tested', score: 0, attempts: 0 },
+            'Escalation Judgment': { icon: '⬆️', desc: 'Knowing when to escalate vs close', level: 'not-tested', score: 0, attempts: 0 },
+            'Priority Ranking': { icon: '📋', desc: 'Ranking alerts by true urgency', level: 'not-tested', score: 0, attempts: 0 },
+            'False Positive ID': { icon: '🚫', desc: 'Recognizing false positives without missing real threats', level: 'not-tested', score: 0, attempts: 0 },
+            'Documentation': { icon: '📝', desc: 'Writing clear, actionable escalation reports', level: 'not-tested', score: 0, attempts: 0 }
+        };
+
+        const TRIAGE_ALERTS = [
+            {
+                id: 'ALT-001', title: 'Multiple Failed SSH Login Attempts', severity: 'high', source: 'Linux Server', time: '3 min ago', user: 'N/A (External)', host: 'srv-prod-01',
+                summary: `<p><strong>23 failed SSH attempts</strong> detected from external IP <strong>203.0.113.45</strong></p><p>Target: Production server (srv-prod-01)</p><p>Timeframe: Last 5 minutes</p><p>Pattern: Appears to be password spraying attack</p>`,
+                sourceInfo: `<p><strong>Source IP:</strong> 203.0.113.45</p><p><strong>Geo:</strong> Unknown VPN exit node</p><p><strong>Target:</strong> 10.0.1.50 (srv-prod-01)</p><p><strong>Service:</strong> SSH (Port 22)</p>`,
+                context: `<p>• First seen from this IP</p><p>• No successful authentications</p><p>• User accounts targeted: root, admin, deploy</p><p>• Rate: ~5 attempts per minute</p><p>• Similar pattern seen last week (blocked)</p>`,
+                logs: [
+                    { time: '14:32:01', level: 'warn', msg: 'Failed password for root from 203.0.113.45' },
+                    { time: '14:32:15', level: 'warn', msg: 'Failed password for admin from 203.0.113.45' },
+                    { time: '14:32:28', level: 'warn', msg: 'Failed password for deploy from 203.0.113.45' },
+                    { time: '14:32:55', level: 'info', msg: 'Connection closed by 203.0.113.45 [preauth]' }
+                ],
+                correctAnswer: 'close',
+                skills: { 'False Positive ID': true, 'Severity Assessment': true },
+                feedback: {
+                    correct: "Good call! All attempts failed - no successful authentication. Document, ensure IP is blocked, and close. No escalation needed for failed brute force with no breach.",
+                    incorrect: "Since all 23 attempts failed with no successful login, this is a blocked attack. The correct action was to close after confirming IP is blocked. Escalation only needed if there was successful auth."
+                }
+            },
+            {
+                id: 'ALT-002', title: 'Large Data Transfer to External IP', severity: 'critical', source: 'DLP System', time: '1 min ago', user: 'jsmith (CFO)', host: 'WKS-EXEC-07',
+                summary: `<p><strong>4.7 GB</strong> transferred to external cloud storage</p><p>Source: Executive workstation (WKS-EXEC-07)</p><p>Destination: Consumer file sharing service (Dropbox)</p><p>Time: 11:47 PM (outside business hours)</p>`,
+                sourceInfo: `<p><strong>User:</strong> jsmith (CFO)</p><p><strong>Workstation:</strong> WKS-EXEC-07</p><p><strong>Destination:</strong> External cloud storage</p><p><strong>Protocol:</strong> HTTPS (443)</p>`,
+                context: `<p>• Transfer at 11:47 PM</p><p>• Files: Q4_Financials.xlsx, M&A_Plans.docx</p><p>• User normally works 8 AM - 6 PM</p><p>• No travel scheduled</p><p>• 3 failed MFA attempts before success</p><p>• VPN from unusual location</p>`,
+                logs: [
+                    { time: '23:42:11', level: 'info', msg: 'VPN connection established - jsmith@external-ip' },
+                    { time: '23:42:15', level: 'warn', msg: 'MFA challenge failed - jsmith' },
+                    { time: '23:42:28', level: 'warn', msg: 'MFA challenge failed - jsmith' },
+                    { time: '23:42:41', level: 'info', msg: 'MFA challenge success - jsmith' },
+                    { time: '23:47:33', level: 'error', msg: 'DLP: Large file transfer - 4.7GB to external' }
+                ],
+                correctAnswer: 'escalate',
+                skills: { 'Context Recognition': true, 'Escalation Judgment': true, 'Severity Assessment': true },
+                feedback: {
+                    correct: "Excellent judgment! Multiple red flags: executive account, sensitive files, unusual hours, external destination, suspicious MFA activity. This needed immediate Tier 2/IR escalation.",
+                    incorrect: "This needed immediate escalation. CFO account + sensitive M&A files + after hours + external storage + failed MFA attempts = potential breach in progress. Always escalate when multiple red flags align."
+                }
+            },
+            {
+                id: 'ALT-003', title: 'PowerShell Execution with Encoded Command', severity: 'high', source: 'EDR', time: '5 min ago', user: 'tadmin (IT Admin)', host: 'WKS-IT-03',
+                summary: `<p><strong>Encoded PowerShell</strong> execution detected</p><p>Host: IT Admin workstation (WKS-IT-03)</p><p>Process spawned from: legitimate admin console</p><p>Command includes: -EncodedCommand parameter</p>`,
+                sourceInfo: `<p><strong>User:</strong> tadmin (IT Administrator)</p><p><strong>Host:</strong> WKS-IT-03</p><p><strong>Parent Process:</strong> AdminConsole.exe</p><p><strong>Working Dir:</strong> C:\\AdminTools\\</p>`,
+                context: `<p>• User is IT Administrator (expected PS usage)</p><p>• AdminConsole.exe is approved software</p><p>• Decoded command: Remote system inventory script</p><p>• Connects to internal management server only</p><p>• Same command seen daily from IT team</p><p>• Signed with valid internal certificate</p>`,
+                logs: [
+                    { time: '14:28:01', level: 'info', msg: 'Process start: AdminConsole.exe - User: tadmin' },
+                    { time: '14:28:03', level: 'warn', msg: 'Encoded PowerShell detected - PID 4521' },
+                    { time: '14:28:03', level: 'info', msg: 'Decoded: Get-SystemInventory -Target internal-mgmt' },
+                    { time: '14:28:05', level: 'info', msg: 'Network connection: 10.0.0.50:443 (internal-mgmt)' }
+                ],
+                correctAnswer: 'close',
+                skills: { 'Context Recognition': true, 'False Positive ID': true },
+                feedback: {
+                    correct: "Right call! Context matters. IT admin using approved software with legitimate inventory script connecting internally. This is normal IT operations - document and close.",
+                    incorrect: "Look at context: IT admin + approved tool + legitimate decoded command + internal-only connections + daily pattern = normal operations. Not every encoded PowerShell is malicious."
+                }
+            },
+            {
+                id: 'ALT-004', title: 'Antivirus Disabled on Endpoint', severity: 'medium', source: 'Endpoint Protection', time: '8 min ago', user: 'mdev (Developer)', host: 'WKS-DEV-12',
+                summary: `<p><strong>AV real-time protection</strong> disabled</p><p>Host: Developer workstation (WKS-DEV-12)</p><p>Duration: 45 minutes and counting</p><p>Method: Windows Security Center API</p>`,
+                sourceInfo: `<p><strong>User:</strong> mdev (Software Developer)</p><p><strong>Host:</strong> WKS-DEV-12</p><p><strong>OS:</strong> Windows 11 Pro</p><p><strong>AV Product:</strong> Corporate AV Solution</p>`,
+                context: `<p>• Developer frequently disables AV for builds</p><p>• Previous: 12 incidents in past month (all legitimate)</p><p>• Typical disable: 15-20 minutes</p><p>• Current: 45+ minutes (longer than usual)</p><p>• No other suspicious activity on host</p><p>• User has history of working late on releases</p>`,
+                logs: [
+                    { time: '13:45:22', level: 'warn', msg: 'Real-time protection disabled by user mdev' },
+                    { time: '13:45:23', level: 'info', msg: 'Build process started: msbuild.exe' },
+                    { time: '14:15:00', level: 'info', msg: 'Build process completed' },
+                    { time: '14:30:00', level: 'warn', msg: 'AV still disabled after 45 minutes' }
+                ],
+                correctAnswer: 'investigate',
+                skills: { 'Context Recognition': true, 'Escalation Judgment': true },
+                feedback: {
+                    correct: "Good thinking! Pattern exists but duration is unusual. Contact user to verify, confirm re-enable plan, and document. Investigate before closing.",
+                    incorrect: "This needed investigation. The developer has a history of disabling AV, but 45+ minutes is longer than their typical 15-20 minutes. A quick verification with the user was warranted before closing or escalating."
+                }
+            }
+        ];
+
+        const PRIORITY_SCENARIOS = [
+            {
+                alerts: [
+                    { id: 1, title: 'Certificate Expiring in 7 Days', severity: 'low', details: 'SSL cert for internal tool expires next week', correctRank: 5 },
+                    { id: 2, title: 'Ransomware Detected on Endpoint', severity: 'critical', details: 'Known ransomware signature on finance workstation', correctRank: 1 },
+                    { id: 3, title: 'Failed Login - Service Account', severity: 'medium', details: '5 failed attempts on backup service account', correctRank: 3 },
+                    { id: 4, title: 'Data Exfil to Known Bad IP', severity: 'critical', details: 'HR server connecting to threat intel flagged IP', correctRank: 2 },
+                    { id: 5, title: 'USB Device Connected', severity: 'low', details: 'Keyboard plugged into reception desk PC', correctRank: 4 }
+                ],
+                skills: { 'Priority Ranking': true, 'Severity Assessment': true }
+            }
+        ];
+
+        const REDFLAG_SCENARIOS = [
+            {
+                title: 'Suspicious Login Activity',
+                context: 'Review this alert and click on all the red flags:',
+                items: [
+                    { text: 'User: jsmith (Finance Manager)', isRedFlag: true, hint: 'High-value target - access to sensitive data' },
+                    { text: 'Login Time: 2:47 AM', isRedFlag: true, hint: 'Off-hours activity for 9-5 employee' },
+                    { text: 'Source IP: Germany', isRedFlag: true, hint: 'No company offices in Germany' },
+                    { text: 'Browser: Chrome 120', isRedFlag: false },
+                    { text: 'MFA: 2 failures before success', isRedFlag: true, hint: 'MFA bypass attempt indicator' },
+                    { text: 'Previous login: 3 days ago', isRedFlag: false },
+                    { text: 'Session duration: 4 minutes', isRedFlag: false },
+                    { text: 'Files accessed: Q4_Budget.xlsx', isRedFlag: true, hint: 'Sensitive financial data' }
+                ],
+                skills: { 'Context Recognition': true, 'False Positive ID': true }
+            }
+        ];
+
+        const ESCALATION_SCENARIOS = [
+            {
+                title: 'Data Exfiltration Alert',
+                alert: {
+                    type: 'DLP - Large Outbound Transfer',
+                    severity: 'High',
+                    user: 'mthompson (Marketing Director)',
+                    host: 'WKS-MKT-05 (10.50.2.15)',
+                    time: '9:45 PM',
+                    details: '1.2GB uploaded to personal Google Drive. Files include: CustomerList_2024.xlsx, Campaign_Strategy.pptx, Vendor_Contracts.pdf'
+                },
+                requiredElements: ['summary', 'affected', 'findings', 'reason', 'urgency'],
+                keywords: {
+                    summary: ['dlp', 'data', 'transfer', 'upload', 'google', 'drive'],
+                    affected: ['mthompson', 'marketing', 'wks-mkt', '10.50'],
+                    findings: ['1.2gb', 'customer', 'campaign', 'vendor', 'personal'],
+                    reason: ['after hours', 'personal', 'sensitive', 'unauthorized', 'policy'],
+                    urgency: ['high', 'immediate']
+                },
+                skills: { 'Documentation': true, 'Escalation Judgment': true }
+            }
+        ];
+
+        // Common mistakes to avoid based on module
+        const COMMON_MISTAKES = {
+            'alert-triage': [
+                "Escalating every high-severity alert without checking context",
+                "Closing alerts too quickly without gathering enough information",
+                "Ignoring off-hours activity as a red flag",
+                "Not correlating multiple suspicious indicators together"
+            ],
+            'priority-queue': [
+                "Prioritizing by severity badge alone without considering impact",
+                "Not recognizing that active threats always come first",
+                "Treating all 'critical' alerts as equally urgent"
+            ],
+            'red-flags': [
+                "Missing time-based anomalies (off-hours, unusual patterns)",
+                "Overlooking geographic impossibilities",
+                "Not recognizing high-value targets (executives, finance)"
+            ],
+            'escalation-builder': [
+                "Missing key details like affected assets or timestamps",
+                "Not explaining WHY you're escalating",
+                "Incorrect urgency assessment"
+            ],
+            'time-pressure': [
+                "Rushing decisions without reviewing all context tabs",
+                "Panicking and escalating everything under time pressure",
+                "Not using the full time available to make informed decisions"
+            ]
+        };
+
+        // ==================== State ====================
+        let userData = { name: '', email: '', startTime: null };
+        let appState = { completedModules: [], currentModule: null, moduleHistory: [] };
+        let moduleState = { currentIndex: 0, completed: [], decisions: [], attempts: 0, correctCount: 0 };
+        let timerInterval = null;
+        let timeRemaining = 0;
+
+        // ==================== Initialization ====================
+        function init() {
+            setupLoginValidation();
+            setupNavigation();
+            setupDetailTabs();
+            setupDecisionButtons();
+            renderModules();
+            renderSkillsOverview();
+            renderAnalyticsSkills();
+        }
+
+        function setupLoginValidation() {
+            const nameInput = document.getElementById('user-name');
+            const emailInput = document.getElementById('user-email');
+            const startBtn = document.getElementById('start-btn');
+            const form = document.getElementById('login-form');
+
+            function validate() {
+                const nameValid = nameInput.value.trim().length >= 2;
+                const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
+                startBtn.disabled = !(nameValid && emailValid);
+            }
+
+            nameInput.addEventListener('input', validate);
+            emailInput.addEventListener('input', validate);
+            form.addEventListener('submit', (e) => { e.preventDefault(); startApp(); });
+        }
+
+        function startApp() {
+            userData.name = document.getElementById('user-name').value.trim();
+            userData.email = document.getElementById('user-email').value.trim();
+            userData.startTime = new Date().toISOString();
+
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('app').classList.add('active');
+            document.getElementById('header-user-name').textContent = userData.name;
+            document.getElementById('user-avatar').textContent = userData.name.charAt(0).toUpperCase();
+            updateProgress();
+        }
+
+        function setupNavigation() {
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const view = tab.dataset.view;
+                    document.getElementById('dashboard-view').classList.toggle('hidden', view !== 'dashboard');
+                    document.getElementById('analytics-view').classList.toggle('active', view === 'analytics');
+                    document.getElementById('module-view').classList.remove('active');
+                });
+            });
+        }
+
+        function setupDetailTabs() {
+            document.querySelectorAll('.detail-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    renderAlertContent(tab.dataset.tab);
+                });
+            });
+        }
+
+        function setupDecisionButtons() {
+            document.querySelectorAll('.decision-btn').forEach(btn => {
+                btn.addEventListener('click', () => { if (!btn.disabled) makeDecision(btn.dataset.decision); });
+            });
+        }
+
+        // ==================== Rendering ====================
+        function renderModules() {
+            const grid = document.getElementById('modules-grid');
+            grid.innerHTML = MODULES.map((module, index) => {
+                const isCompleted = appState.completedModules.includes(module.id);
+                const isLocked = index > 0 && !appState.completedModules.includes(MODULES[index - 1].id);
+
+                return `
+                    <div class="module-card ${isCompleted ? 'completed' : ''} ${isLocked ? 'locked' : ''}"
+                         onclick="${isLocked ? '' : `startModule('${module.id}')`}">
+                        <div class="module-icon">${module.icon}</div>
+                        <div class="module-title">${module.title}</div>
+                        <div class="module-description">${module.description}</div>
+                        <div class="module-meta">
+                            <span class="module-status ${isCompleted ? 'completed' : isLocked ? 'locked' : 'available'}">
+                                ${isCompleted ? '✅ Completed' : isLocked ? '🔒 Locked' : '▶️ Start'}
+                            </span>
+                            <span class="module-time">${module.time}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderSkillsOverview() {
+            const grid = document.getElementById('skills-overview-grid');
+            grid.innerHTML = Object.entries(SKILLS).map(([name, skill]) => `
+                <div class="skill-item">
+                    <div class="skill-name">${skill.icon} ${name}</div>
+                    <div class="skill-bar"><div class="skill-bar-fill ${skill.level}"></div></div>
+                    <div class="skill-level">${formatSkillLevel(skill.level)}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderAnalyticsSkills() {
+            const container = document.getElementById('analytics-skills-detail');
+            container.innerHTML = Object.entries(SKILLS).map(([name, skill]) => `
+                <div class="skill-detail-row">
+                    <div class="skill-detail-icon">${skill.icon}</div>
+                    <div class="skill-detail-info">
+                        <div class="skill-detail-name">${name}</div>
+                        <div class="skill-detail-desc">${skill.desc}</div>
+                    </div>
+                    <div class="skill-detail-level">
+                        <div class="skill-detail-stars">${getStars(skill.level)}</div>
+                        <div class="skill-detail-label">${formatSkillLevel(skill.level)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function formatSkillLevel(level) {
+            return { 'expert': 'Expert', 'strong': 'Strong', 'developing': 'Developing', 'needs-work': 'Needs Work', 'not-tested': 'Not Tested' }[level] || 'Not Tested';
+        }
+
+        function getStars(level) {
+            return { 'expert': '⭐⭐⭐⭐⭐', 'strong': '⭐⭐⭐⭐☆', 'developing': '⭐⭐⭐☆☆', 'needs-work': '⭐⭐☆☆☆', 'not-tested': '☆☆☆☆☆' }[level] || '☆☆☆☆☆';
+        }
+
+        function updateProgress() {
+            const completed = appState.completedModules.length;
+            document.getElementById('header-progress').textContent = `${completed}/${MODULES.length} Modules Complete`;
+            document.getElementById('analytics-modules').textContent = `${completed}/${MODULES.length}`;
+        }
+
+        // ==================== Module Management ====================
+        function startModule(moduleId) {
+            appState.currentModule = moduleId;
+            moduleState = { currentIndex: 0, completed: [], decisions: [], attempts: 0, correctCount: 0 };
+
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('analytics-view').classList.remove('active');
+            document.getElementById('module-view').classList.add('active');
+            document.getElementById('results-screen').classList.remove('active');
+
+            // Hide all containers
+            document.getElementById('triage-container').classList.add('hidden');
+            document.getElementById('priority-container').classList.add('hidden');
+            document.getElementById('redflags-container').classList.add('hidden');
+            document.getElementById('escalation-container').classList.add('hidden');
+            document.getElementById('timer-display').classList.add('hidden');
+
+            switch(moduleId) {
+                case 'alert-triage':
+                    document.getElementById('triage-container').classList.remove('hidden');
+                    renderAlertQueue();
+                    selectAlert(0);
+                    break;
+                case 'priority-queue':
+                    document.getElementById('priority-container').classList.remove('hidden');
+                    renderPriorityQueue();
+                    break;
+                case 'red-flags':
+                    document.getElementById('redflags-container').classList.remove('hidden');
+                    renderRedFlags();
+                    break;
+                case 'escalation-builder':
+                    document.getElementById('escalation-container').classList.remove('hidden');
+                    renderEscalationScenario();
+                    break;
+                case 'time-pressure':
+                    document.getElementById('triage-container').classList.remove('hidden');
+                    document.getElementById('timer-display').classList.remove('hidden');
+                    startTimer(300); // 5 minutes
+                    renderAlertQueue();
+                    selectAlert(0);
+                    break;
+            }
+            updateModuleProgress();
+        }
+
+        function exitModule() {
+            if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+            document.getElementById('module-view').classList.remove('active');
+            document.getElementById('dashboard-view').classList.remove('hidden');
+            appState.currentModule = null;
+            renderModules();
+            renderSkillsOverview();
+            renderAnalyticsSkills();
+        }
+
+        function restartModule() {
+            startModule(appState.currentModule);
+        }
+
+        function updateModuleProgress() {
+            const total = appState.currentModule === 'alert-triage' || appState.currentModule === 'time-pressure' ? TRIAGE_ALERTS.length : 1;
+            const completed = moduleState.completed.length;
+            const percent = (completed / total) * 100;
+            document.getElementById('module-progress-bar').style.width = `${percent}%`;
+            document.getElementById('module-progress-text').textContent = `${completed + 1} of ${total}`;
+        }
+
+        // ==================== Alert Triage Module (NO IMMEDIATE FEEDBACK) ====================
+        function renderAlertQueue() {
+            const list = document.getElementById('alert-queue-list');
+            list.innerHTML = TRIAGE_ALERTS.map((alert, index) => `
+                <div class="alert-item ${index === moduleState.currentIndex ? 'active' : ''} ${moduleState.completed.includes(index) ? 'answered' : ''}"
+                     onclick="selectAlert(${index})" id="alert-item-${index}">
+                    <div class="alert-item-header">
+                        <span class="alert-item-title">${alert.title}</span>
+                        <span class="severity-badge ${alert.severity}">${alert.severity}</span>
+                    </div>
+                    <div class="alert-item-meta">
+                        <span>🖥️ ${alert.source}</span>
+                        <span>🕐 ${alert.time}</span>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('queue-count').textContent = TRIAGE_ALERTS.length - moduleState.completed.length;
+        }
+
+        function selectAlert(index) {
+            if (moduleState.completed.includes(index)) return;
+            moduleState.currentIndex = index;
+            const alert = TRIAGE_ALERTS[index];
+
+            document.querySelectorAll('.alert-item').forEach((item, i) => item.classList.toggle('active', i === index));
+
+            document.getElementById('detail-title').textContent = alert.title;
+            document.getElementById('detail-meta').innerHTML = `
+                <span><strong>Severity:</strong> <span class="severity-badge ${alert.severity}">${alert.severity}</span></span>
+                <span><strong>Source:</strong> ${alert.source}</span>
+                <span><strong>User:</strong> ${alert.user}</span>
+                <span><strong>Host:</strong> ${alert.host}</span>
+            `;
+
+            document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('.detail-tab[data-tab="summary"]').classList.add('active');
+            renderAlertContent('summary');
+
+            // Reset decision buttons - NO highlighting of correct/incorrect
+            document.querySelectorAll('.decision-btn').forEach(btn => {
+                btn.disabled = false;
+                btn.classList.remove('selected');
+            });
+        }
+
+        function renderAlertContent(tab) {
+            const alert = TRIAGE_ALERTS[moduleState.currentIndex];
+            const content = document.getElementById('detail-content');
+            switch (tab) {
+                case 'summary': content.innerHTML = alert.summary; break;
+                case 'source': content.innerHTML = alert.sourceInfo; break;
+                case 'context': content.innerHTML = alert.context; break;
+                case 'logs':
+                    content.innerHTML = `<div class="log-entries">${alert.logs.map(log => `
+                        <div class="log-entry">
+                            <span class="log-time">${log.time}</span>
+                            <span class="log-level ${log.level}">${log.level.toUpperCase()}</span>
+                            <span class="log-msg">${log.msg}</span>
+                        </div>
+                    `).join('')}</div>`;
+                    break;
+            }
+        }
+
+        // NO IMMEDIATE FEEDBACK - Just record and move on
+        function makeDecision(decision) {
+            const alert = TRIAGE_ALERTS[moduleState.currentIndex];
+            const isCorrect = decision === alert.correctAnswer;
+            moduleState.attempts++;
+
+            // Record the decision
+            moduleState.decisions.push({
+                alertId: alert.id,
+                alertTitle: alert.title,
+                userDecision: decision,
+                correctAnswer: alert.correctAnswer,
+                isCorrect: isCorrect,
+                skills: alert.skills,
+                feedback: isCorrect ? alert.feedback.correct : alert.feedback.incorrect
+            });
+
+            if (isCorrect) {
+                moduleState.correctCount++;
+            }
+
+            // Update skill scores
+            Object.keys(alert.skills).forEach(skill => {
+                if (SKILLS[skill]) {
+                    SKILLS[skill].attempts++;
+                    if (isCorrect) SKILLS[skill].score++;
+                    updateSkillLevel(skill);
+                }
+            });
+
+            // Mark as completed and move to next
+            moduleState.completed.push(moduleState.currentIndex);
+
+            // Brief visual feedback that selection was made
+            document.querySelectorAll('.decision-btn').forEach(btn => {
+                btn.disabled = true;
+                if (btn.dataset.decision === decision) {
+                    btn.classList.add('selected');
+                }
+            });
+
+            // Short delay then move to next or complete
+            setTimeout(() => {
+                if (moduleState.completed.length >= TRIAGE_ALERTS.length) {
+                    completeModule();
+                } else {
+                    let nextIndex = moduleState.currentIndex + 1;
+                    while (moduleState.completed.includes(nextIndex) && nextIndex < TRIAGE_ALERTS.length) nextIndex++;
+                    if (nextIndex >= TRIAGE_ALERTS.length) nextIndex = 0;
+                    while (moduleState.completed.includes(nextIndex)) nextIndex++;
+
+                    renderAlertQueue();
+                    selectAlert(nextIndex);
+                    updateModuleProgress();
+                }
+            }, 500);
+        }
+
+        function updateSkillLevel(skillName) {
+            const skill = SKILLS[skillName];
+            if (skill.attempts === 0) { skill.level = 'not-tested'; return; }
+            const ratio = skill.score / skill.attempts;
+            if (ratio >= 0.9) skill.level = 'expert';
+            else if (ratio >= 0.75) skill.level = 'strong';
+            else if (ratio >= 0.5) skill.level = 'developing';
+            else skill.level = 'needs-work';
+        }
+
+        // ==================== Priority Queue Module ====================
+        function renderPriorityQueue() {
+            const scenario = PRIORITY_SCENARIOS[0];
+            const shuffled = [...scenario.alerts].sort(() => Math.random() - 0.5);
+            const container = document.getElementById('priority-alerts');
+
+            container.innerHTML = shuffled.map((alert, i) => `
+                <div class="priority-alert" draggable="true" data-id="${alert.id}" data-correct="${alert.correctRank}">
+                    <div class="priority-rank">${i + 1}</div>
+                    <div class="priority-alert-info">
+                        <div class="priority-alert-title">${alert.title}</div>
+                        <div class="priority-alert-details">
+                            <span class="severity-badge ${alert.severity}">${alert.severity}</span>
+                            ${alert.details}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            setupDragAndDrop();
+        }
+
+        function setupDragAndDrop() {
+            const alerts = document.querySelectorAll('.priority-alert');
+            let draggedItem = null;
+
+            alerts.forEach(alert => {
+                alert.addEventListener('dragstart', () => { draggedItem = alert; alert.classList.add('dragging'); });
+                alert.addEventListener('dragend', () => { alert.classList.remove('dragging'); updateRanks(); });
+                alert.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    const container = document.getElementById('priority-alerts');
+                    const afterElement = getDragAfterElement(container, e.clientY);
+                    if (afterElement == null) container.appendChild(draggedItem);
+                    else container.insertBefore(draggedItem, afterElement);
+                });
+            });
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.priority-alert:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) return { offset: offset, element: child };
+                else return closest;
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        function updateRanks() {
+            document.querySelectorAll('.priority-alert').forEach((alert, i) => {
+                alert.querySelector('.priority-rank').textContent = i + 1;
+            });
+        }
+
+        function submitPriorityRanking() {
+            const alerts = document.querySelectorAll('.priority-alert');
+            let correct = 0;
+            const total = alerts.length;
+
+            // Record decisions for results
+            moduleState.decisions = [];
+            alerts.forEach((alert, i) => {
+                const correctRank = parseInt(alert.dataset.correct);
+                const userRank = i + 1;
+                const isCorrect = correctRank === userRank;
+                if (isCorrect) correct++;
+
+                const alertData = PRIORITY_SCENARIOS[0].alerts.find(a => a.id === parseInt(alert.dataset.id));
+                moduleState.decisions.push({
+                    alertId: alert.dataset.id,
+                    alertTitle: alertData.title,
+                    userDecision: `Rank #${userRank}`,
+                    correctAnswer: `Rank #${correctRank}`,
+                    isCorrect: isCorrect,
+                    feedback: isCorrect ? 'Correctly prioritized!' : `Should be rank #${correctRank} - ${alertData.details}`
+                });
+            });
+
+            moduleState.correctCount = correct;
+            moduleState.attempts = total;
+
+            // Update skills
+            const scenario = PRIORITY_SCENARIOS[0];
+            Object.keys(scenario.skills).forEach(skill => {
+                if (SKILLS[skill]) {
+                    SKILLS[skill].attempts++;
+                    if (correct >= total * 0.6) SKILLS[skill].score++;
+                    updateSkillLevel(skill);
+                }
+            });
+
+            completeModule();
+        }
+
+        // ==================== Red Flags Module ====================
+        function renderRedFlags() {
+            const scenario = REDFLAG_SCENARIOS[0];
+            const container = document.getElementById('redflags-alert');
+
+            container.innerHTML = `
+                <h3>${scenario.title}</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 16px;">${scenario.context}</p>
+                <div class="redflag-items">
+                    ${scenario.items.map((item, i) => `
+                        <div class="redflag-item" data-index="${i}" data-redflag="${item.isRedFlag}" onclick="toggleRedFlag(this)">
+                            ${item.text}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function toggleRedFlag(element) {
+            element.classList.toggle('selected');
+        }
+
+        function submitRedFlags() {
+            const scenario = REDFLAG_SCENARIOS[0];
+            const items = document.querySelectorAll('.redflag-item');
+            let correct = 0;
+            let missed = 0;
+            let falsePositives = 0;
+            const totalFlags = scenario.items.filter(i => i.isRedFlag).length;
+
+            moduleState.decisions = [];
+
+            items.forEach((item, i) => {
+                const isRedFlag = item.dataset.redflag === 'true';
+                const isSelected = item.classList.contains('selected');
+                const scenarioItem = scenario.items[i];
+
+                if (isRedFlag && isSelected) {
+                    correct++;
+                    moduleState.decisions.push({
+                        alertTitle: scenarioItem.text,
+                        userDecision: 'Flagged as red flag',
+                        correctAnswer: 'Is a red flag',
+                        isCorrect: true,
+                        feedback: scenarioItem.hint
+                    });
+                } else if (isRedFlag && !isSelected) {
+                    missed++;
+                    moduleState.decisions.push({
+                        alertTitle: scenarioItem.text,
+                        userDecision: 'Not flagged',
+                        correctAnswer: 'Should be flagged',
+                        isCorrect: false,
+                        feedback: `Missed: ${scenarioItem.hint}`
+                    });
+                } else if (!isRedFlag && isSelected) {
+                    falsePositives++;
+                    moduleState.decisions.push({
+                        alertTitle: scenarioItem.text,
+                        userDecision: 'Flagged as red flag',
+                        correctAnswer: 'Not a red flag',
+                        isCorrect: false,
+                        feedback: 'This is normal - not a red flag'
+                    });
+                }
+            });
+
+            moduleState.correctCount = correct;
+            moduleState.attempts = totalFlags + falsePositives;
+
+            Object.keys(scenario.skills).forEach(skill => {
+                if (SKILLS[skill]) {
+                    SKILLS[skill].attempts++;
+                    if (correct >= totalFlags * 0.6 && falsePositives <= 1) SKILLS[skill].score++;
+                    updateSkillLevel(skill);
+                }
+            });
+
+            completeModule();
+        }
+
+        // ==================== Escalation Builder Module ====================
+        function renderEscalationScenario() {
+            const scenario = ESCALATION_SCENARIOS[0];
+            document.getElementById('escalation-scenario').innerHTML = `
+                <h3>📋 ${scenario.title}</h3>
+                <div class="detail-content" style="margin-top: 16px;">
+                    <p><strong>Alert Type:</strong> ${scenario.alert.type}</p>
+                    <p><strong>Severity:</strong> <span class="severity-badge high">${scenario.alert.severity}</span></p>
+                    <p><strong>User:</strong> ${scenario.alert.user}</p>
+                    <p><strong>Host:</strong> ${scenario.alert.host}</p>
+                    <p><strong>Time:</strong> ${scenario.alert.time}</p>
+                    <p><strong>Details:</strong> ${scenario.alert.details}</p>
+                </div>
+            `;
+
+            // Clear form
+            ['esc-summary', 'esc-affected', 'esc-findings', 'esc-reason', 'esc-urgency'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el.tagName === 'SELECT') el.selectedIndex = 0;
+                else el.value = '';
+            });
+        }
+
+        function submitEscalation() {
+            const scenario = ESCALATION_SCENARIOS[0];
+            const fields = {
+                summary: document.getElementById('esc-summary').value.toLowerCase(),
+                affected: document.getElementById('esc-affected').value.toLowerCase(),
+                findings: document.getElementById('esc-findings').value.toLowerCase(),
+                reason: document.getElementById('esc-reason').value.toLowerCase(),
+                urgency: document.getElementById('esc-urgency').value
+            };
+
+            let score = 0;
+            const maxScore = 5;
+            moduleState.decisions = [];
+
+            // Check each field
+            Object.entries(fields).forEach(([field, value]) => {
+                let isCorrect = false;
+                let feedback = '';
+
+                if (field === 'urgency') {
+                    isCorrect = value === 'immediate' || value === 'high';
+                    feedback = isCorrect ? 'Correctly identified as high priority' : 'Should be High or Immediate for data exfil';
+                } else {
+                    const keywords = scenario.keywords[field];
+                    isCorrect = keywords.some(kw => value.includes(kw)) && value.length > 10;
+                    feedback = isCorrect ? 'Good detail included' : 'Missing key details or too brief';
+                }
+
+                if (isCorrect) score++;
+
+                moduleState.decisions.push({
+                    alertTitle: field.charAt(0).toUpperCase() + field.slice(1),
+                    userDecision: value.length > 30 ? value.substring(0, 30) + '...' : value || '(empty)',
+                    correctAnswer: isCorrect ? 'Adequate' : 'Needs more detail',
+                    isCorrect: isCorrect,
+                    feedback: feedback
+                });
+            });
+
+            moduleState.correctCount = score;
+            moduleState.attempts = maxScore;
+
+            Object.keys(scenario.skills).forEach(skill => {
+                if (SKILLS[skill]) {
+                    SKILLS[skill].attempts++;
+                    if (score >= 4) SKILLS[skill].score++;
+                    updateSkillLevel(skill);
+                }
+            });
+
+            completeModule();
+        }
+
+        // ==================== Timer (Time Pressure Module) ====================
+        function startTimer(seconds) {
+            timeRemaining = seconds;
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    completeModule();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const display = document.getElementById('timer-display');
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            display.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+            display.classList.remove('warning', 'critical');
+            if (timeRemaining <= 30) display.classList.add('critical');
+            else if (timeRemaining <= 60) display.classList.add('warning');
+        }
+
+        // ==================== Module Completion - NEW RESULTS SCREEN ====================
+        function completeModule() {
+            if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+
+            // Hide all containers
+            document.getElementById('triage-container').classList.add('hidden');
+            document.getElementById('priority-container').classList.add('hidden');
+            document.getElementById('redflags-container').classList.add('hidden');
+            document.getElementById('escalation-container').classList.add('hidden');
+            document.getElementById('timer-display').classList.add('hidden');
+
+            // Calculate score
+            const total = moduleState.decisions.length || moduleState.attempts;
+            const correct = moduleState.correctCount;
+            const scorePercent = total > 0 ? Math.round((correct / total) * 100) : 0;
+            const passed = scorePercent >= PASS_THRESHOLD;
+
+            // Show results screen
+            const resultsScreen = document.getElementById('results-screen');
+            resultsScreen.classList.add('active');
+
+            if (passed) {
+                renderPassedResults(scorePercent, correct, total);
+                // Mark module as completed
+                if (!appState.completedModules.includes(appState.currentModule)) {
+                    appState.completedModules.push(appState.currentModule);
+                }
+            } else {
+                renderFailedResults(scorePercent, correct, total);
+            }
+
+            updateProgress();
+            updateAnalytics();
+            sendAnalytics(scorePercent, passed);
+        }
+
+        function renderFailedResults(scorePercent, correct, total) {
+            const resultsScreen = document.getElementById('results-screen');
+            resultsScreen.innerHTML = `
+                <div class="results-failed">
+                    <div class="results-failed-icon">📊</div>
+                    <div class="results-failed-score">${scorePercent}%</div>
+                    <div class="results-failed-message">
+                        You scored ${correct} out of ${total} correct
+                    </div>
+                    <div class="results-failed-requirement">
+                        You need <span>${PASS_THRESHOLD}%</span> to pass this module
+                    </div>
+                    <p style="color: var(--text-secondary); margin-bottom: 32px; max-width: 500px; margin-left: auto; margin-right: auto;">
+                        Take your time reviewing each alert. Look at all the context tabs before making a decision.
+                    </p>
+                    <div class="results-actions">
+                        <button class="btn btn-primary" onclick="restartModule()">🔄 Retry This Module</button>
+                        <button class="btn btn-secondary" onclick="exitModule()">← Back to Dashboard</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPassedResults(scorePercent, correct, total) {
+            const resultsScreen = document.getElementById('results-screen');
+            const moduleName = MODULES.find(m => m.id === appState.currentModule)?.title || 'Module';
+            const testedSkills = Object.entries(SKILLS).filter(([_, s]) => s.attempts > 0);
+            const strongSkills = testedSkills.filter(([_, s]) => s.score / s.attempts >= 0.75).map(([name, s]) => ({ name, icon: s.icon }));
+            const weakSkills = testedSkills.filter(([_, s]) => s.score / s.attempts < 0.75).map(([name, s]) => ({ name, icon: s.icon }));
+            const mistakes = COMMON_MISTAKES[appState.currentModule] || [];
+            const relevantMistakes = moduleState.decisions.filter(d => !d.isCorrect).length > 0 ? mistakes.slice(0, 3) : [];
+
+            resultsScreen.innerHTML = `
+                <div class="results-passed">
+                    <div class="results-header">
+                        <div class="results-passed-icon">🎉</div>
+                        <div class="results-passed-score">${scorePercent}%</div>
+                        <div class="results-passed-message">
+                            ${scorePercent === 100 ? 'Perfect score!' : 'Great job!'} You passed ${moduleName}
+                        </div>
+                    </div>
+
+                    <!-- Turn Breakdown -->
+                    <div class="turn-breakdown">
+                        <div class="turn-breakdown-title">📋 Turn Breakdown</div>
+                        ${moduleState.decisions.map((decision, i) => `
+                            <div class="turn-item">
+                                <div class="turn-number ${decision.isCorrect ? 'correct' : 'incorrect'}">${i + 1}</div>
+                                <div class="turn-content">
+                                    <div class="turn-title">${decision.alertTitle}</div>
+                                    <div class="turn-detail">
+                                        Your answer: <span class="your-answer">${formatDecision(decision.userDecision)}</span>
+                                        ${!decision.isCorrect ? ` → Correct: <span class="correct-answer">${formatDecision(decision.correctAnswer)}</span>` : ''}
+                                    </div>
+                                    ${!decision.isCorrect && decision.feedback ? `
+                                        <div class="turn-explanation">${decision.feedback}</div>
+                                    ` : ''}
+                                </div>
+                                <div class="turn-status">
+                                    <span class="turn-status-icon">${decision.isCorrect ? '✅' : '❌'}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- Skills & Focus Areas -->
+                    <div class="results-insights">
+                        <div class="insight-card">
+                            <div class="insight-title">✅ Skills Tested</div>
+                            <div class="insight-list">
+                                ${strongSkills.length > 0 ? strongSkills.map(s => `
+                                    <div class="insight-item">
+                                        <span class="insight-icon">${s.icon}</span>
+                                        <span class="insight-text strength">${s.name}</span>
+                                    </div>
+                                `).join('') : '<div class="insight-item"><span class="insight-text">No strong skills yet</span></div>'}
+                            </div>
+                        </div>
+                        <div class="insight-card">
+                            <div class="insight-title">🎯 Areas to Improve</div>
+                            <div class="insight-list">
+                                ${weakSkills.length > 0 ? weakSkills.map(s => `
+                                    <div class="insight-item">
+                                        <span class="insight-icon">${s.icon}</span>
+                                        <span class="insight-text improve">${s.name}</span>
+                                    </div>
+                                `).join('') : '<div class="insight-item"><span class="insight-text" style="color: var(--success)">All skills strong!</span></div>'}
+                            </div>
+                        </div>
+                    </div>
+
+                    ${relevantMistakes.length > 0 ? `
+                    <!-- Common Mistakes -->
+                    <div class="mistakes-card">
+                        <div class="mistakes-title">⚠️ Common Mistakes to Avoid</div>
+                        ${relevantMistakes.map(mistake => `
+                            <div class="mistake-item">
+                                <span class="mistake-icon">•</span>
+                                <span>${mistake}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    ` : ''}
+
+                    <div class="results-actions">
+                        <button class="btn btn-secondary" onclick="restartModule()">🔄 Retry This Module</button>
+                        <button class="btn btn-primary" onclick="exitModule()">Continue to Next Module →</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function formatDecision(decision) {
+            const map = {
+                'escalate': 'Escalate',
+                'investigate': 'Investigate',
+                'close': 'Close Alert'
+            };
+            return map[decision] || decision;
+        }
+
+        function updateAnalytics() {
+            const totalAttempts = Object.values(SKILLS).reduce((sum, s) => sum + s.attempts, 0);
+            const totalCorrect = Object.values(SKILLS).reduce((sum, s) => sum + s.score, 0);
+            const overallScore = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
+
+            document.getElementById('analytics-score').textContent = totalAttempts > 0 ? `${overallScore}%` : '--%';
+
+            const testedSkills = Object.entries(SKILLS).filter(([_, s]) => s.attempts > 0);
+            if (testedSkills.length > 0) {
+                testedSkills.sort((a, b) => (b[1].score / b[1].attempts) - (a[1].score / a[1].attempts));
+                document.getElementById('analytics-strength').textContent = testedSkills[0][0];
+                document.getElementById('analytics-focus').textContent = testedSkills[testedSkills.length - 1][0];
+            }
+            renderAnalyticsSkills();
+        }
+
+        function showAnalytics() {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('.nav-tab[data-view="analytics"]').classList.add('active');
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('analytics-view').classList.add('active');
+        }
+
+        // ==================== Analytics Sending ====================
+        async function sendAnalytics(scorePercent, passed) {
+            const testedSkills = Object.entries(SKILLS).filter(([_, s]) => s.attempts > 0);
+            const strongSkills = testedSkills.filter(([_, s]) => s.score / s.attempts >= 0.75).map(([name]) => name);
+            const weakSkills = testedSkills.filter(([_, s]) => s.score / s.attempts < 0.75).map(([name]) => name);
+
+            const data = {
+                name: userData.name,
+                email: userData.email,
+                score: scorePercent,
+                passed: passed,
+                correctAnswers: moduleState.correctCount,
+                incorrectAnswers: moduleState.decisions.filter(d => !d.isCorrect).length,
+                trainingType: `SOC Training Hub - ${MODULES.find(m => m.id === appState.currentModule)?.title || 'Unknown'}`,
+                strengths: strongSkills.join('; ') || 'None identified',
+                areasToImprove: weakSkills.join('; ') || 'None - Great job!'
+            };
+
+            if (ANALYTICS_ENDPOINT) {
+                try {
+                    await fetch(ANALYTICS_ENDPOINT, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                } catch (error) {
+                    console.error('Failed to send analytics:', error);
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

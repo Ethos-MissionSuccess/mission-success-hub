@@ -12,8 +12,10 @@
             --ethos-green: #6B9E95;
             --ethos-green-dark: #537773;
             --ethos-green-light: #84A9A2;
-            --ethos-gray: #616161;
-            --ethos-gray-light: #9E9E9E;
+            --gray-200: #D5D5D5;
+            --gray-400: #9E9E9E;
+            --gray-600: #616161;
+            --bg-light: #F5F5F5;
             --font-headline: 'Space Grotesk', sans-serif;
             --font-body: 'Roboto', sans-serif;
         }
@@ -26,210 +28,89 @@
 
         body {
             font-family: var(--font-body);
-            background: var(--ethos-black);
-            color: var(--ethos-white);
+            background: var(--bg-light);
+            color: var(--ethos-black);
             min-height: 100vh;
         }
 
+        /* Header - matches Ethos site style */
         .header {
-            background: linear-gradient(135deg, var(--ethos-black) 0%, var(--ethos-gray) 100%);
-            padding: 40px 20px;
+            background: var(--ethos-green-dark);
+            padding: 12px 20px;
             text-align: center;
-            border-bottom: 3px solid var(--ethos-green);
         }
 
-        .header-content {
-            max-width: 900px;
-            margin: 0 auto;
+        .header-banner {
+            font-family: var(--font-headline);
+            font-size: 0.85rem;
+            color: var(--ethos-white);
+            letter-spacing: 1px;
+        }
+
+        .nav {
+            background: var(--ethos-white);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--gray-200);
         }
 
         .logo {
             font-family: var(--font-headline);
-            font-size: 2.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            color: var(--ethos-white);
-            margin-bottom: 8px;
-            letter-spacing: -1px;
+            color: var(--ethos-black);
+            letter-spacing: 2px;
         }
 
         .logo span {
             color: var(--ethos-green);
         }
 
-        .subtitle {
+        .nav-subtitle {
             font-family: var(--font-headline);
-            font-size: 1.3rem;
-            color: var(--ethos-green);
-            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: var(--gray-600);
             font-weight: 500;
         }
 
-        .description {
-            font-size: 1rem;
-            color: #aaa;
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.6;
+        /* Hero Section */
+        .hero {
+            background: var(--ethos-white);
+            padding: 60px 20px;
+            text-align: center;
         }
 
-        .main-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .section-title {
+        .hero-title {
             font-family: var(--font-headline);
-            font-size: 1.5rem;
-            color: var(--ethos-white);
-            margin-bottom: 25px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--ethos-gray-light);
-        }
-
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 25px;
-            margin-bottom: 50px;
-        }
-
-        .project-card {
-            background: var(--ethos-gray);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid var(--ethos-gray-light);
-        }
-
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(74, 144, 217, 0.15);
-            border-color: var(--ethos-green);
-        }
-
-        .card-header {
-            background: linear-gradient(135deg, var(--ethos-green) 0%, var(--ethos-blue-dark) 100%);
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .card-icon {
-            width: 50px;
-            height: 50px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-
-        .card-title {
-            font-family: var(--font-headline);
-            font-size: 1.15rem;
-            font-weight: 600;
-            color: var(--ethos-white);
-        }
-
-        .card-body {
-            padding: 20px;
-        }
-
-        .card-description {
-            font-size: 0.9rem;
-            color: #ccc;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-
-        .card-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+            font-size: 2.8rem;
+            font-weight: 400;
+            color: var(--ethos-black);
             margin-bottom: 20px;
+            line-height: 1.2;
         }
 
-        .tag {
-            background: var(--ethos-black);
+        .hero-title span {
             color: var(--ethos-green);
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 0.75rem;
-            font-weight: 500;
         }
 
-        .card-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--ethos-green);
-            color: var(--ethos-white);
-            padding: 10px 20px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-family: var(--font-headline);
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: background 0.2s ease;
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--gray-600);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
         }
 
-        .card-link:hover {
-            background: var(--ethos-blue-dark);
-        }
-
-        .card-link.disabled {
-            background: #555;
-            cursor: default;
-        }
-
-        .card-link.disabled:hover {
-            background: #555;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-left: auto;
-        }
-
-        .status-live {
-            background: #28a745;
-            color: white;
-        }
-
-        .status-beta {
-            background: #ffc107;
-            color: #333;
-        }
-
-        .status-dev {
-            background: #6c757d;
-            color: white;
-        }
-
-        .project-card.coming-soon {
-            opacity: 0.7;
-        }
-
-        .project-card.coming-soon .card-header {
-            background: linear-gradient(135deg, #555 0%, #444 100%);
-        }
-
+        /* Stats Section */
         .stats-section {
             display: flex;
             justify-content: center;
-            gap: 50px;
-            padding: 30px;
-            background: var(--ethos-gray);
-            border-radius: 12px;
-            margin-bottom: 50px;
+            gap: 60px;
+            padding: 40px 20px;
+            background: var(--ethos-white);
+            border-bottom: 1px solid var(--gray-200);
         }
 
         .stat-item {
@@ -245,19 +126,137 @@
 
         .stat-label {
             font-size: 0.85rem;
-            color: #aaa;
+            color: var(--gray-600);
             margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .footer {
-            background: var(--ethos-gray);
-            padding: 30px 20px;
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        .section-label {
+            font-family: var(--font-headline);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--gray-400);
+            margin-bottom: 30px;
             text-align: center;
-            border-top: 1px solid var(--ethos-gray-light);
+        }
+
+        /* Cards Grid - Dark cards like Ethos site */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .project-card {
+            background: var(--ethos-black);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-icon-row {
+            padding: 24px 24px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .card-icon-graphic {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-icon-graphic span {
+            font-size: 28px;
+            color: var(--ethos-green);
+        }
+
+        .card-icon-graphic .line {
+            width: 30px;
+            height: 2px;
+            background: var(--ethos-green);
+            opacity: 0.5;
+        }
+
+        .card-body {
+            padding: 20px 24px 28px;
+        }
+
+        .card-title {
+            font-family: var(--font-headline);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--ethos-white);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .card-description {
+            font-size: 0.9rem;
+            color: var(--gray-400);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--ethos-green);
+            text-decoration: none;
+            font-family: var(--font-headline);
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .card-link:hover {
+            color: var(--ethos-green-light);
+        }
+
+        .card-link .arrow {
+            transition: transform 0.2s ease;
+        }
+
+        .card-link:hover .arrow {
+            transform: translateX(4px);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--ethos-black);
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .footer-logo {
+            font-family: var(--font-headline);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--ethos-white);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
         }
 
         .footer-text {
-            color: #888;
+            color: var(--gray-400);
             font-size: 0.85rem;
         }
 
@@ -267,7 +266,7 @@
         }
 
         @media (max-width: 768px) {
-            .logo {
+            .hero-title {
                 font-size: 2rem;
             }
             .projects-grid {
@@ -277,109 +276,108 @@
                 flex-direction: column;
                 gap: 25px;
             }
+            .nav {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 <body>
 
     <header class="header">
-        <div class="header-content">
-            <div class="logo">ETHOS <span>Innovation Hub</span></div>
-            <div class="subtitle">Mission Success Manager</div>
-            <p class="description">
-                Interactive training tools and AI-powered solutions developed by Mission Success Manager to enhance user experience and operational efficiency.
-            </p>
-        </div>
+        <div class="header-banner">MISSION SUCCESS INNOVATION HUB</div>
     </header>
+
+    <nav class="nav">
+        <div class="logo"><span>E</span>THOS</div>
+        <div class="nav-subtitle">Mission Success Manager</div>
+    </nav>
+
+    <section class="hero">
+        <h1 class="hero-title">Interactive <span>Training Tools</span> for Mission Readiness</h1>
+        <p class="hero-description">
+            AI-powered simulations and practice environments developed by Mission Success Manager to enhance skills and operational efficiency—with zero engineering dependency.
+        </p>
+    </section>
+
+    <section class="stats-section">
+        <div class="stat-item">
+            <div class="stat-number">3</div>
+            <div class="stat-label">Active Tools</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">0</div>
+            <div class="stat-label">Engineering Required</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">AI-Assisted</div>
+        </div>
+    </section>
 
     <main class="main-content">
 
-        <div class="stats-section">
-            <div class="stat-item">
-                <div class="stat-number">3</div>
-                <div class="stat-label">Active Projects</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">0</div>
-                <div class="stat-label">Engineering Required</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">100%</div>
-                <div class="stat-label">AI-Assisted Development</div>
-            </div>
-        </div>
+        <div class="section-label">Training Simulations</div>
 
-        <h2 class="section-title">Interactive Training Simulations</h2>
         <div class="projects-grid">
 
             <!-- AD Simulation Trainer -->
             <div class="project-card">
-                <div class="card-header">
-                    <div class="card-icon">&#128187;</div>
-                    <div>
-                        <div class="card-title">Active Directory Simulation</div>
+                <div class="card-icon-row">
+                    <div class="card-icon-graphic">
+                        <span>&#128187;</span>
+                        <div class="line"></div>
+                        <span>&#128100;</span>
                     </div>
-                    <span class="status-badge status-live">Live</span>
                 </div>
                 <div class="card-body">
+                    <div class="card-title">Active Directory Simulation</div>
                     <p class="card-description">
-                        Learn to create user accounts in Active Directory for the CANES environment. Practice with realistic SAAR-N forms and step-by-step guidance without touching live systems.
+                        Learn to create user accounts in Active Directory for the CANES environment. Practice with realistic SAAR-N forms and step-by-step guidance.
                     </p>
-                    <div class="card-tags">
-                        <span class="tag">CANES</span>
-                        <span class="tag">Active Directory</span>
-                        <span class="tag">User Management</span>
-                    </div>
                     <a href="ad-simulation-trainer-v2.html" class="card-link">
-                        Launch Trainer &#8594;
+                        Launch Trainer <span class="arrow">→</span>
                     </a>
                 </div>
             </div>
 
             <!-- SOC Alert Triage -->
             <div class="project-card">
-                <div class="card-header">
-                    <div class="card-icon">&#128680;</div>
-                    <div>
-                        <div class="card-title">SOC Alert Triage Trainer</div>
+                <div class="card-icon-row">
+                    <div class="card-icon-graphic">
+                        <span>&#128680;</span>
+                        <div class="line"></div>
+                        <span>&#128270;</span>
                     </div>
-                    <span class="status-badge status-live">Live</span>
                 </div>
                 <div class="card-body">
+                    <div class="card-title">SOC Alert Triage Trainer</div>
                     <p class="card-description">
-                        Practice identifying and triaging security alerts. Learn to classify threats, prioritize responses, and make critical decisions under pressure in a simulated SOC environment.
+                        Practice identifying and triaging security alerts. Learn to classify threats and make critical decisions in a simulated SOC environment.
                     </p>
-                    <div class="card-tags">
-                        <span class="tag">Security</span>
-                        <span class="tag">SOC</span>
-                        <span class="tag">Alert Triage</span>
-                    </div>
                     <a href="soc-training-hub.html" class="card-link">
-                        Launch Trainer &#8594;
+                        Launch Trainer <span class="arrow">→</span>
                     </a>
                 </div>
             </div>
 
             <!-- Sales Conversation Trainer -->
             <div class="project-card">
-                <div class="card-header">
-                    <div class="card-icon">&#128172;</div>
-                    <div>
-                        <div class="card-title">Sales Conversation Trainer</div>
+                <div class="card-icon-row">
+                    <div class="card-icon-graphic">
+                        <span>&#128172;</span>
+                        <div class="line"></div>
+                        <span>&#129309;</span>
                     </div>
-                    <span class="status-badge status-live">Live</span>
                 </div>
                 <div class="card-body">
+                    <div class="card-title">Sales Conversation Trainer</div>
                     <p class="card-description">
-                        Practice handling difficult customer conversations. Navigate budget objections and legacy system concerns. Stay on topic or the customer will end the meeting!
+                        Practice handling difficult customer conversations. Navigate budget objections and legacy system concerns with AI-powered roleplay.
                     </p>
-                    <div class="card-tags">
-                        <span class="tag">Soft Skills</span>
-                        <span class="tag">Sales Training</span>
-                        <span class="tag">Objection Handling</span>
-                    </div>
                     <a href="sales-roleplay-trainer.html" class="card-link">
-                        Launch Trainer &#8594;
+                        Launch Trainer <span class="arrow">→</span>
                     </a>
                 </div>
             </div>
@@ -389,11 +387,12 @@
     </main>
 
     <footer class="footer">
+        <div class="footer-logo">ETHOS</div>
         <p class="footer-text">
-            ETHOS Systems | Mission Success Manager | <a href="#">Training & Customer Success</a>
+            Mission Success Manager | <a href="#">Training & Customer Success</a>
         </p>
         <p class="footer-text" style="margin-top: 10px; font-size: 0.75rem;">
-            Built with AI assistance - Zero engineering dependency
+            Built with AI assistance
         </p>
     </footer>
 

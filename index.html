@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mission Success Innovation Hub | ETHOS</title>
+    <title>Public Sector GTM Innovation Hub | ETHOS</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -33,7 +33,6 @@
             min-height: 100vh;
         }
 
-        /* Header - matches Ethos site style */
         .header {
             background: var(--ethos-green-dark);
             padding: 12px 20px;
@@ -51,7 +50,7 @@
             background: var(--ethos-white);
             padding: 20px 40px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             border-bottom: 1px solid var(--gray-200);
         }
@@ -68,14 +67,6 @@
             color: var(--ethos-green);
         }
 
-        .nav-subtitle {
-            font-family: var(--font-headline);
-            font-size: 0.9rem;
-            color: var(--gray-600);
-            font-weight: 500;
-        }
-
-        /* Hero Section */
         .hero {
             background: var(--ethos-white);
             padding: 60px 20px;
@@ -103,7 +94,6 @@
             line-height: 1.7;
         }
 
-        /* Stats Section */
         .stats-section {
             display: flex;
             justify-content: center;
@@ -132,7 +122,6 @@
             letter-spacing: 1px;
         }
 
-        /* Main Content */
         .main-content {
             max-width: 1200px;
             margin: 0 auto;
@@ -150,7 +139,6 @@
             text-align: center;
         }
 
-        /* Cards Grid - Dark cards like Ethos site */
         .projects-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -204,7 +192,21 @@
             color: var(--ethos-white);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
+        }
+
+        .card-meta {
+            font-size: 0.8rem;
+            color: var(--ethos-green-light);
+            margin-bottom: 12px;
+            display: flex;
+            gap: 16px;
+        }
+
+        .card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .card-description {
@@ -238,7 +240,6 @@
             transform: translateX(4px);
         }
 
-        /* Footer */
         .footer {
             background: var(--ethos-black);
             padding: 40px 20px;
@@ -280,24 +281,27 @@
                 flex-direction: column;
                 gap: 10px;
             }
+            .card-meta {
+                flex-direction: column;
+                gap: 4px;
+            }
         }
     </style>
 </head>
 <body>
 
     <header class="header">
-        <div class="header-banner">MISSION SUCCESS INNOVATION HUB</div>
+        <div class="header-banner">PUBLIC SECTOR GTM INNOVATION HUB</div>
     </header>
 
     <nav class="nav">
         <div class="logo"><span>E</span>THOS</div>
-        <div class="nav-subtitle">Mission Success Manager</div>
     </nav>
 
     <section class="hero">
-        <h1 class="hero-title">Interactive <span>Training Tools</span> for Mission Readiness</h1>
+        <h1 class="hero-title">AI <span>Innovation Repository</span> & Demos</h1>
         <p class="hero-description">
-            AI-powered simulations and practice environments developed by Mission Success Manager to enhance skills and operational efficiency—with zero engineering dependency.
+            Centralized hub for internal cross-sharing of GTM proof-of-concepts
         </p>
     </section>
 
@@ -306,19 +310,11 @@
             <div class="stat-number">3</div>
             <div class="stat-label">Active Tools</div>
         </div>
-        <div class="stat-item">
-            <div class="stat-number">0</div>
-            <div class="stat-label">Engineering Required</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-number">100%</div>
-            <div class="stat-label">AI-Assisted</div>
-        </div>
     </section>
 
     <main class="main-content">
 
-        <div class="section-label">Training Simulations</div>
+        <div class="section-label">Proof-of-Concepts</div>
 
         <div class="projects-grid">
 
@@ -333,11 +329,15 @@
                 </div>
                 <div class="card-body">
                     <div class="card-title">Active Directory Simulation</div>
+                    <div class="card-meta">
+                        <span>Randy Gaona</span>
+                        <span>Jan 2026</span>
+                    </div>
                     <p class="card-description">
-                        Learn to create user accounts in Active Directory for the CANES environment. Practice with realistic SAAR-N forms and step-by-step guidance.
+                        Interactive trainer for CANES Active Directory user account creation with realistic SAAR-N forms and guided walkthroughs.
                     </p>
                     <a href="ad-simulation-trainer-v2.html" class="card-link">
-                        Launch Trainer <span class="arrow">→</span>
+                        Launch Demo <span class="arrow">→</span>
                     </a>
                 </div>
             </div>
@@ -353,11 +353,15 @@
                 </div>
                 <div class="card-body">
                     <div class="card-title">SOC Alert Triage Trainer</div>
+                    <div class="card-meta">
+                        <span>Randy Gaona</span>
+                        <span>Jan 2026</span>
+                    </div>
                     <p class="card-description">
-                        Practice identifying and triaging security alerts. Learn to classify threats and make critical decisions in a simulated SOC environment.
+                        Practice security alert triage and threat classification in a simulated SOC environment with real-time feedback.
                     </p>
                     <a href="soc-training-hub.html" class="card-link">
-                        Launch Trainer <span class="arrow">→</span>
+                        Launch Demo <span class="arrow">→</span>
                     </a>
                 </div>
             </div>
@@ -373,11 +377,15 @@
                 </div>
                 <div class="card-body">
                     <div class="card-title">Sales Conversation Trainer</div>
+                    <div class="card-meta">
+                        <span>Randy Gaona</span>
+                        <span>Feb 2026</span>
+                    </div>
                     <p class="card-description">
-                        Practice handling difficult customer conversations. Navigate budget objections and legacy system concerns with AI-powered roleplay.
+                        AI-powered roleplay for handling customer objections, budget concerns, and legacy system discussions.
                     </p>
                     <a href="sales-roleplay-trainer.html" class="card-link">
-                        Launch Trainer <span class="arrow">→</span>
+                        Launch Demo <span class="arrow">→</span>
                     </a>
                 </div>
             </div>
@@ -389,10 +397,7 @@
     <footer class="footer">
         <div class="footer-logo">ETHOS</div>
         <p class="footer-text">
-            Mission Success Manager | <a href="#">Training & Customer Success</a>
-        </p>
-        <p class="footer-text" style="margin-top: 10px; font-size: 0.75rem;">
-            Built with AI assistance
+            Public Sector GTM | <a href="#">Innovation Hub</a>
         </p>
     </footer>
 

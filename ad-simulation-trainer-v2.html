@@ -15,9 +15,6 @@
             font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #1A1A1A;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             padding: 20px;
             color: #FFFFFF;
         }
@@ -38,13 +35,178 @@
             font-size: 0.9rem;
         }
 
+        /* Main wrapper for side-by-side layout */
+        .main-wrapper {
+            display: flex;
+            gap: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+            align-items: flex-start;
+        }
+
+        /* SAAR-N Form Panel */
+        .saar-panel {
+            width: 380px;
+            flex-shrink: 0;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            overflow: hidden;
+            max-height: 700px;
+            overflow-y: auto;
+        }
+
+        .saar-header {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            color: white;
+            padding: 12px 15px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .saar-header-icon {
+            font-size: 18px;
+        }
+
+        .saar-body {
+            padding: 15px;
+            font-size: 0.8rem;
+            color: #333;
+        }
+
+        .saar-title {
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            color: #1a365d;
+        }
+
+        .saar-subtitle {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #666;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #1a365d;
+        }
+
+        .saar-section {
+            margin-bottom: 12px;
+            padding: 10px;
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+        }
+
+        .saar-section-title {
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: #1a365d;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .saar-field {
+            display: flex;
+            margin-bottom: 6px;
+            font-size: 0.75rem;
+        }
+
+        .saar-label {
+            width: 110px;
+            font-weight: 500;
+            color: #4a5568;
+            flex-shrink: 0;
+        }
+
+        .saar-value {
+            flex: 1;
+            color: #2d3748;
+            font-weight: 600;
+            background: #edf2f7;
+            padding: 2px 6px;
+            border-radius: 2px;
+        }
+
+        .saar-value.highlight {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+        }
+
+        .saar-checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .saar-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.7rem;
+        }
+
+        .saar-checkbox input {
+            width: 12px;
+            height: 12px;
+        }
+
+        .saar-groups-list {
+            background: #edf2f7;
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+
+        .saar-group-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 0;
+            font-size: 0.7rem;
+        }
+
+        .saar-group-item::before {
+            content: '☑';
+            color: #38a169;
+        }
+
+        .saar-signature {
+            border-top: 1px solid #333;
+            margin-top: 8px;
+            padding-top: 5px;
+            font-style: italic;
+            font-size: 0.7rem;
+        }
+
         .simulation-container {
             background: #0f0f1a;
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 0 40px rgba(0, 150, 255, 0.1);
+            flex: 1;
             max-width: 1100px;
-            width: 100%;
+        }
+
+        @media (max-width: 1200px) {
+            .main-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+            .saar-panel {
+                width: 100%;
+                max-width: 500px;
+                max-height: 300px;
+            }
         }
 
         /* Windows Title Bar */
@@ -342,6 +504,15 @@
 
         .context-item:hover .submenu {
             display: block;
+        }
+
+        .submenu .context-item {
+            color: #333;
+        }
+
+        .submenu .context-item:hover {
+            background: #0078d4;
+            color: white;
         }
 
         /* Dialog Boxes */
@@ -693,7 +864,102 @@
         <p>CANES Environment - User Account Creation</p>
     </div>
 
-    <div class="simulation-container">
+    <div class="main-wrapper">
+        <!-- SAAR-N Form Reference Panel -->
+        <div class="saar-panel">
+            <div class="saar-header">
+                <span class="saar-header-icon">📋</span>
+                SAAR-N Form Reference
+            </div>
+            <div class="saar-body">
+                <div class="saar-title">SYSTEM AUTHORIZATION ACCESS REQUEST - NAVY</div>
+                <div class="saar-subtitle">OPNAV 5239/14 (Rev. 09/2011)</div>
+
+                <div class="saar-section">
+                    <div class="saar-section-title">Section 1: User Information</div>
+                    <div class="saar-field">
+                        <span class="saar-label">Last Name:</span>
+                        <span class="saar-value highlight">Smith</span>
+                    </div>
+                    <div class="saar-field">
+                        <span class="saar-label">First Name:</span>
+                        <span class="saar-value highlight">John</span>
+                    </div>
+                    <div class="saar-field">
+                        <span class="saar-label">Middle Initial:</span>
+                        <span class="saar-value">A</span>
+                    </div>
+                    <div class="saar-field">
+                        <span class="saar-label">Rate/Rank:</span>
+                        <span class="saar-value">IT2</span>
+                    </div>
+                    <div class="saar-field">
+                        <span class="saar-label">Organization:</span>
+                        <span class="saar-value">USS DDG-112</span>
+                    </div>
+                    <div class="saar-field">
+                        <span class="saar-label">Division:</span>
+                        <span class="saar-value highlight">Combat Systems</span>
+                    </div>
+                </div>
+
+                <div class="saar-section">
+                    <div class="saar-section-title">Section 2: Account Information</div>
+                    <div class="saar-field">
+                        <span class="saar-label">User Logon ID:</span>
+                        <span class="saar-value highlight">jsmith</span>
+                    </div>
+                    <div class="saar-field">
+                        <span class="saar-label">System:</span>
+                        <span class="saar-value">CANES</span>
+                    </div>
+                    <div class="saar-field">
+                        <span class="saar-label">Domain:</span>
+                        <span class="saar-value">shipddg112.spawar.navy.mil</span>
+                    </div>
+                    <div class="saar-checkbox-group">
+                        <label class="saar-checkbox">
+                            <input type="checkbox" checked disabled> New Account
+                        </label>
+                        <label class="saar-checkbox">
+                            <input type="checkbox" disabled> Modify
+                        </label>
+                        <label class="saar-checkbox">
+                            <input type="checkbox" disabled> Delete
+                        </label>
+                    </div>
+                </div>
+
+                <div class="saar-section">
+                    <div class="saar-section-title">Section 3: Required Group Memberships</div>
+                    <div class="saar-groups-list">
+                        <div class="saar-group-item">Combat Systems</div>
+                        <div class="saar-group-item">All Hands</div>
+                        <div class="saar-group-item">CS-Div</div>
+                    </div>
+                </div>
+
+                <div class="saar-section">
+                    <div class="saar-section-title">Section 4: Approvals</div>
+                    <div class="saar-field">
+                        <span class="saar-label">Supervisor:</span>
+                        <span class="saar-value">LCDR Martinez</span>
+                    </div>
+                    <div class="saar-signature">
+                        Signature: <em>J. Martinez</em> &nbsp; Date: 01/15/2026
+                    </div>
+                    <div class="saar-field" style="margin-top: 8px;">
+                        <span class="saar-label">Security Officer:</span>
+                        <span class="saar-value">LT Thompson</span>
+                    </div>
+                    <div class="saar-signature">
+                        Signature: <em>R. Thompson</em> &nbsp; Date: 01/16/2026
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="simulation-container">
         <!-- Windows Title Bar -->
         <div class="window-titlebar">
             <div class="window-title">
@@ -1014,6 +1280,7 @@
             </div>
         </div>
     </div>
+    </div> <!-- Close main-wrapper -->
 
     <!-- Completion Screen -->
     <div class="completion-screen" id="completionScreen">
